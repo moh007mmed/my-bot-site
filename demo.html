@@ -6,59 +6,57 @@
     <title>تجربة النظام الذكي | MoMA AI Labs</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body { font-family: 'Tajawal', sans-serif; background-color: #030712; color: #ffffff; overflow-x: hidden; min-height: 100vh; }
-        .bg-grid { background-image: radial-gradient(#1e293b 1px, transparent 1px); background-size: 40px 40px; mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 70%, transparent 100%); }
-        .neon-glow { position: absolute; bottom: -50px; right: -50px; width: 300px; height: 300px; background: radial-gradient(circle, rgba(59, 130, 246, 0.2) 0%, transparent 70%); z-index: 1; }
+        #canvas-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
         .glass-ui { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
-        @keyframes floating { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-        .float-animation { animation: floating 3s ease-in-out infinite; }
+        
+        /* تأثير البوت النابض في الزاوية */
+        .bot-trigger {
+            position: fixed; bottom: 30px; right: 30px; width: 70px; height: 70px;
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            border-radius: 50%; display: flex; items-center; justify-content: center;
+            box-shadow: 0 0 30px rgba(59, 130, 246, 0.5); z-index: 100; cursor: pointer;
+            animation: pulse-blue 2s infinite;
+        }
+        @keyframes pulse-blue {
+            0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7); }
+            70% { box-shadow: 0 0 0 20px rgba(59, 130, 246, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
+        }
+        
+        .instruction-tag {
+            position: fixed; bottom: 110px; right: 40px; background: #3b82f6;
+            padding: 5px 15px; border-radius: 10px; font-size: 12px; font-weight: bold;
+            z-index: 100; animation: bounce 2s infinite;
+        }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
     </style>
 </head>
 <body class="relative" x-data="{ open: false }">
 
-    <div class="absolute inset-0 bg-grid z-0"></div>
-    <div class="neon-glow"></div>
+    <div id="canvas-container"></div>
+
+    <div class="instruction-tag">تحدث معي هنا! ✨</div>
+
+    <div class="bot-trigger">
+        <i class="fas fa-comment-dots text-2xl text-white"></i>
+    </div>
 
     <nav class="fixed top-0 w-full z-50 border-b border-white/10 bg-black/80 backdrop-blur-lg">
         <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
             <a href="index.html" class="text-3xl font-black tracking-tighter text-white">
                 MoMA <span class="text-blue-500">AI</span>
             </a>
-            
             <div class="hidden md:flex items-center space-x-reverse space-x-8 font-medium">
                 <a href="index.html" class="text-gray-400 hover:text-white transition">الرئيسية</a>
                 <a href="about.html" class="text-gray-400 hover:text-white transition">من نحن</a>
                 <a href="demo.html" class="text-blue-500 font-bold">تجربة الديمو 🚀</a>
                 <a href="contact.html" class="text-gray-400 hover:text-white transition">تواصل معنا</a>
             </div>
-
-            <div class="hidden md:block">
-                <a href="index.html" class="px-5 py-2 rounded-full border border-white/10 text-sm font-medium hover:bg-white/5 transition flex items-center gap-2 text-white">
-                    <i class="fas fa-arrow-right"></i> العودة للموقع
-                </a>
-            </div>
-
-            <div class="md:hidden">
-                <button @click="open = !open" class="text-white focus:outline-none">
-                    <i class="fas" :class="open ? 'fa-times' : 'fa-bars'" style="font-size: 1.5rem;"></i>
-                </button>
-            </div>
-        </div>
-
-        <div x-show="open" 
-             x-transition:enter="transition ease-out duration-200"
-             x-transition:enter-start="opacity-0 -translate-y-4"
-             x-transition:enter-end="opacity-100 translate-y-0"
-             class="md:hidden bg-black/95 border-b border-white/10 px-6 py-8 space-y-6">
-            <a href="index.html" class="block text-xl font-bold text-gray-400">الرئيسية</a>
-            <a href="about.html" class="block text-xl font-bold text-gray-400">من نحن</a>
-            <a href="demo.html" class="block text-xl font-bold text-blue-500 underline">تجربة الديمو 🚀</a>
-            <a href="contact.html" class="block text-xl font-bold text-gray-400">تواصل معنا</a>
-            <hr class="border-white/10">
-            <a href="index.html" class="block text-center text-sm text-gray-500"><i class="fas fa-arrow-right ml-2"></i> العودة للموقع الرئيسي</a>
         </div>
     </nav>
 
@@ -71,45 +69,40 @@
                         <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
                         <span class="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
                     </span>
-                    بيئة تجريبية حية (V2.0)
+                    بيئة تجريبية أسطورية
                 </div>
                 <h1 class="text-5xl md:text-6xl font-black leading-tight mb-6">
-                    مستقبل <br><span class="text-transparent bg-clip-text bg-gradient-to-l from-blue-400 to-cyan-400">خدمة العملاء</span>
+                    المساعد <br><span class="text-transparent bg-clip-text bg-gradient-to-l from-blue-400 to-cyan-400">الذكي المتفاعل</span>
                 </h1>
                 <p class="text-gray-400 text-lg mb-8 max-w-md leading-relaxed">
-                    هذا هو الشكل الذي سيبدو عليه موقعك بعد دمج تقنيات MoMA. جرب التحدث مع البوت العائم في الأسفل لترى السحر.
+                    راقب كيف يقوم "حارس الأنظمة" بتوجيهك. جرب التحدث مع البوت في الأسفل، لقد تم برمجته ليفهم احتياجات عملائك بدقة.
                 </p>
                 
                 <div class="grid grid-cols-2 gap-4">
-                    <div class="glass-ui p-4 rounded-2xl shadow-lg">
-                        <div class="text-blue-500 font-bold mb-1">سرعة الرد</div>
-                        <div class="text-2xl font-black uppercase">0.8s</div>
+                    <div class="glass-ui p-4 rounded-2xl">
+                        <div class="text-blue-500 font-bold mb-1 italic">Response</div>
+                        <div class="text-2xl font-black">ULTRA FAST</div>
                     </div>
-                    <div class="glass-ui p-4 rounded-2xl shadow-lg">
-                        <div class="text-emerald-500 font-bold mb-1">توفير الوقت</div>
-                        <div class="text-2xl font-black uppercase">95%</div>
+                    <div class="glass-ui p-4 rounded-2xl">
+                        <div class="text-emerald-500 font-bold mb-1 italic">Accuracy</div>
+                        <div class="text-2xl font-black">99.2%</div>
                     </div>
                 </div>
             </div>
 
-            <div class="hidden lg:block relative float-animation">
-                <div class="glass-ui w-full h-[400px] rounded-3xl p-6 overflow-hidden relative shadow-2xl border-white/20">
+            <div class="hidden lg:block relative">
+                <div class="glass-ui w-full h-[400px] rounded-3xl p-6 relative overflow-hidden shadow-2xl border-white/20">
                     <div class="flex gap-2 mb-6 border-b border-white/5 pb-4">
                         <div class="w-3 h-3 rounded-full bg-red-500/50"></div>
                         <div class="w-3 h-3 rounded-full bg-yellow-500/50"></div>
                         <div class="w-3 h-3 rounded-full bg-green-500/50"></div>
-                        <span class="text-[10px] text-gray-500 mr-2 font-mono">moma_intelligence.py</span>
+                        <span class="text-[10px] text-gray-500 mr-2 font-mono">mythic_guardian.core</span>
                     </div>
-                    <div class="space-y-4 font-mono text-sm">
-                        <div class="h-4 w-3/4 bg-blue-500/10 rounded border border-blue-500/20"></div>
-                        <div class="h-4 w-1/2 bg-cyan-500/10 rounded border border-cyan-500/20"></div>
-                        <div class="h-32 w-full bg-white/5 rounded-2xl flex items-center justify-center border border-white/5">
-                            <span class="text-blue-400 text-xs tracking-widest opacity-50">STIMULATING_AI_MODELS...</span>
-                        </div>
-                        <div class="grid grid-cols-3 gap-4">
-                            <div class="h-8 bg-white/5 rounded-lg border border-white/5"></div>
-                            <div class="h-8 bg-white/5 rounded-lg border border-white/5"></div>
-                            <div class="h-8 bg-white/5 rounded-lg border border-white/5"></div>
+                    <div class="space-y-4 opacity-50">
+                        <div class="h-4 w-3/4 bg-blue-500/20 rounded"></div>
+                        <div class="h-4 w-1/2 bg-white/10 rounded"></div>
+                        <div class="h-24 w-full bg-blue-500/5 rounded-xl border border-blue-500/10 flex items-center justify-center">
+                             <i class="fas fa-magic text-blue-500 text-3xl animate-pulse"></i>
                         </div>
                     </div>
                 </div>
@@ -119,11 +112,74 @@
     </main>
 
     <footer class="fixed bottom-0 w-full py-6 px-8 text-gray-600 text-[10px] flex justify-between items-center z-50">
-        <div>© 2026 MoMA AI | LABS</div>
+        <div>© 2026 MoMA AI | MYTHIC DEMO</div>
         <div class="flex gap-4">
-            <span class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> ALL SYSTEMS ONLINE</span>
+            <span class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span> GUARDIAN ACTIVE</span>
         </div>
     </footer>
 
+    <script>
+        // --- إعداد المشهد 3D للمخلوق الأسطوري ---
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+        // --- إنشاء المخلوق (تنين الجزيئات) ---
+        const points = [];
+        for (let i = 0; i < 1500; i++) {
+            const x = Math.random() * 10 - 5;
+            const y = Math.random() * 10 - 5;
+            const z = Math.random() * 10 - 5;
+            points.push(new THREE.Vector3(x, y, z));
+        }
+        const geometry = new THREE.BufferGeometry().setFromPoints(points);
+        const material = new THREE.PointsMaterial({ color: 0x3b82f6, size: 0.05, transparent: true, opacity: 0.6 });
+        const creature = new THREE.Points(geometry, material);
+        scene.add(creature);
+
+        // حلقة طاقة حول المخلوق
+        const ringGeo = new THREE.TorusGeometry(3, 0.05, 16, 100);
+        const ringMat = new THREE.MeshBasicMaterial({ color: 0x3b82f6, transparent: true, opacity: 0.1 });
+        const ring = new THREE.Mesh(ringGeo, ringMat);
+        scene.add(ring);
+
+        camera.position.z = 8;
+
+        // تحريك المخلوق
+        function animate() {
+            requestAnimationFrame(animate);
+
+            const time = Date.now() * 0.001;
+
+            // حركة انسيابية تشبه المخلوقات الأسطورية
+            creature.rotation.x = Math.sin(time * 0.5) * 0.2;
+            creature.rotation.y = Math.cos(time * 0.3) * 0.5;
+            
+            // جعل المخلوق يميل باتجاه اليمين الأسفل (التوجيه)
+            creature.position.x = 2 + Math.sin(time) * 0.5;
+            creature.position.y = -1 + Math.cos(time) * 0.5;
+
+            // تحريك الجزيئات
+            const positions = creature.geometry.attributes.position.array;
+            for (let i = 0; i < positions.length; i += 3) {
+                positions[i+1] += Math.sin(time + positions[i]) * 0.002;
+            }
+            creature.geometry.attributes.position.needsUpdate = true;
+
+            ring.rotation.z += 0.005;
+            ring.position.set(creature.position.x, creature.position.y, creature.position.z);
+
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
 </body>
 </html>
