@@ -5,10 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>تواصل مع MoMA | مستقبل أعمالك يبدأ هنا</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { font-family: 'Tajawal', sans-serif; background-color: #000000; color: #ffffff; }
+        body { font-family: 'Tajawal', sans-serif; background-color: #000000; color: #ffffff; scroll-behavior: smooth; }
         .ion-input { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 1rem; transition: all 0.3s ease; }
         .ion-input:focus { border-color: #3b82f6; box-shadow: 0 0 15px rgba(59, 130, 246, 0.2); outline: none; }
         .contact-card { background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(0, 0, 0, 0) 100%); border: 1px solid rgba(255, 255, 255, 0.05); }
@@ -16,47 +17,64 @@
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
     </style>
 </head>
-<body>
+<body x-data="{ open: false }">
 
     <nav class="fixed top-0 w-full z-50 border-b border-white/10 bg-black/80 backdrop-blur-lg px-8 h-20 flex justify-between items-center">
-    <a href="index.html" class="text-3xl font-black tracking-tighter text-white">
-        MoMA <span class="text-blue-500">AI</span>
-    </a>
-    
-    <div class="hidden md:flex items-center space-x-reverse space-x-8 font-medium">
-        <a href="index.html" class="text-gray-400 hover:text-white transition">الرئيسية</a>
-        <a href="about.html" class="text-gray-400 hover:text-white transition">من نحن</a>
-        <a href="demo.html" class="text-gray-400 hover:text-white transition">تجربة الديمو 🚀</a>
-        <a href="contact.html" class="text-blue-500">تواصل معنا</a>
-    </div>
+        <a href="index.html" class="text-3xl font-black tracking-tighter text-white">
+            MoMA <span class="text-blue-500">AI</span>
+        </a>
+        
+        <div class="hidden md:flex items-center space-x-reverse space-x-8 font-medium">
+            <a href="index.html" class="text-gray-400 hover:text-white transition">الرئيسية</a>
+            <a href="about.html" class="text-gray-400 hover:text-white transition">من نحن</a>
+            <a href="demo.html" class="text-gray-400 hover:text-white transition">تجربة الديمو 🚀</a>
+            <a href="contact.html" class="text-blue-500">تواصل معنا</a>
+        </div>
 
-    <div class="md:hidden">
-        <a href="index.html" class="text-sm font-bold text-gray-400">الرئيسية</a>
+        <div class="md:hidden">
+            <button @click="open = !open" class="text-white focus:outline-none">
+                <i class="fas" :class="open ? 'fa-times' : 'fa-bars'" style="font-size: 1.5rem;"></i>
+            </button>
+        </div>
+    </nav>
+
+    <div x-show="open" 
+         x-transition:enter="transition ease-out duration-200"
+         x-transition:enter-start="opacity-0 -translate-y-4"
+         x-transition:enter-end="opacity-100 translate-y-0"
+         class="md:hidden fixed top-20 left-0 w-full z-40 bg-black/95 border-b border-white/10 px-6 py-8 space-y-6">
+        <a href="index.html" class="block text-xl font-bold text-gray-400">الرئيسية</a>
+        <a href="about.html" class="block text-xl font-bold text-gray-400">من نحن</a>
+        <a href="demo.html" class="block text-xl font-bold text-gray-400">تجربة الديمو 🚀</a>
+        <a href="contact.html" class="block text-xl font-bold text-blue-500 underline">تواصل معنا</a>
+        <hr class="border-white/10">
+        <a href="https://wa.me/249118371830" class="block w-full text-center bg-blue-600 py-4 rounded-2xl font-black text-white">
+            تحدث معي عبر واتساب
+        </a>
     </div>
-</nav>
 
     <main class="pt-32 pb-20 px-6 max-w-7xl mx-auto">
         <div class="grid lg:grid-cols-2 gap-16">
             
             <div class="order-2 lg:order-1">
-                <h1 class="text-4xl font-black mb-4">لنبدأ <span class="text-blue-500">مشروعك</span> القادم</h1>
-                <p class="text-gray-400 mb-10 text-lg">بمجرد الإرسال، سيتم جدولة طلبك في نظام MoMA الذكي.</p>
+                <h1 class="text-4xl font-black mb-4 tracking-tight">لنبدأ <span class="text-blue-500">مشروعك</span> القادم</h1>
+                <p class="text-gray-400 mb-10 text-lg">بمجرد الإرسال، سيتم جدولة طلبك في نظام MoMA الذكي ومعالجته فوراً.</p>
 
                 <form action="https://hook.us2.make.com/u8ad6au3qyjvrjkz5snrfeodba7wt4qp" method="POST" class="space-y-6">
                     <div class="grid md:grid-cols-2 gap-6">
                         <div>
-                            <label class="block text-sm font-bold mb-2 text-gray-400 text-right">الاسم</label>
-                            <input type="text" name="customer_name" class="ion-input w-full p-4 text-white text-right" placeholder="الاسم الكريم" required>
+                            <label class="block text-sm font-bold mb-2 text-gray-400">الاسم</label>
+                            <input type="text" name="customer_name" class="ion-input w-full p-4 text-white" placeholder="الاسم الكريم" required>
                         </div>
                         <div>
-                            <label class="block text-sm font-bold mb-2 text-gray-400 text-right">البريد الإلكتروني</label>
-                            <input type="email" name="customer_email" class="ion-input w-full p-4 text-white text-right" placeholder="example@mail.com" required>
+                            <label class="block text-sm font-bold mb-2 text-gray-400">البريد الإلكتروني</label>
+                            <input type="email" name="customer_email" class="ion-input w-full p-4 text-white" placeholder="example@mail.com" required>
                         </div>
                     </div>
 
                     <div>
-                        <label class="block text-sm font-bold mb-2 text-gray-400 text-right">نوع الخدمة المطلوب أتمتتها</label>
-                        <select name="service_type" class="ion-input w-full p-4 text-white bg-slate-900 text-right">
+                        <label class="block text-sm font-bold mb-2 text-gray-400">نوع الخدمة المطلوب أتمتتها</label>
+                        <select name="service_type" class="ion-input w-full p-4 text-white bg-[#0a0a0a]">
                             <option value="AI Chatbot">شات بوت ذكي (Botpress)</option>
                             <option value="Workflow Automation">أتمتة عمليات (n8n / Make)</option>
                             <option value="Dental System">نظام عيادات ذكي</option>
@@ -65,11 +83,11 @@
                     </div>
 
                     <div>
-                        <label class="block text-sm font-bold mb-2 text-gray-400 text-right">تفاصيل المشروع</label>
-                        <textarea name="project_details" rows="5" class="ion-input w-full p-4 text-white text-right" placeholder="أخبرنا كيف يمكننا مساعدتك في تطوير أعمالك؟" required></textarea>
+                        <label class="block text-sm font-bold mb-2 text-gray-400">تفاصيل المشروع</label>
+                        <textarea name="project_details" rows="5" class="ion-input w-full p-4 text-white" placeholder="أخبرنا كيف يمكننا مساعدتك في تطوير أعمالك؟" required></textarea>
                     </div>
 
-                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-4 rounded-2xl transition shadow-xl shadow-blue-600/20">
+                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-4 rounded-2xl transition shadow-xl shadow-blue-600/20 text-lg">
                         إرسال الطلب لـ MoMA
                     </button>
                 </form>
@@ -77,30 +95,30 @@
 
             <div class="order-1 lg:order-2 space-y-6">
                 <div class="contact-card p-8 rounded-3xl border border-blue-500/20 bg-blue-500/5">
-                    <div class="flex items-center gap-2 mb-6">
+                    <div class="flex items-center gap-2 mb-6 text-right">
                         <span class="whatsapp-badge bg-green-500 w-2 h-2 rounded-full"></span>
                         <h2 class="text-xl font-bold">تواصل مباشر</h2>
                     </div>
                     
                     <a href="https://wa.me/249118371830" class="flex items-center gap-5 p-4 rounded-2xl bg-white/5 hover:bg-green-500/10 transition border border-white/5 hover:border-green-500/30 group">
                         <div class="w-12 h-12 rounded-xl bg-green-500/20 flex items-center justify-center text-green-500 text-xl"><i class="fab fa-whatsapp"></i></div>
-                        <div>
+                        <div class="text-right">
                             <p class="text-xs text-gray-500 font-bold uppercase">الواتساب المعتمد</p>
                             <p class="text-lg font-bold">249118371830+</p>
                         </div>
                     </a>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <a href="https://t.me/Moha007mmed" class="p-4 rounded-2xl bg-white/5 border border-white/5 hover:bg-blue-500/10 transition group text-right">
+                <div class="grid grid-cols-2 gap-4">
+                    <a href="https://t.me/Moha007mmed" target="_blank" class="p-4 rounded-2xl bg-white/5 border border-white/5 hover:bg-blue-500/10 transition group text-right">
                         <i class="fab fa-telegram text-blue-400 mb-3 text-2xl"></i>
                         <p class="text-sm font-bold">تلجرام</p>
                     </a>
-                    <a href="https://www.linkedin.com/in/%D9%85%D8%AD%D9%85%D8%AF-%D9%85%D8%AD%D9%85%D9%88%D8%AF-%D8%A7%D9%84%D8%B1%D9%8A%D8%AD-51756738b" class="p-4 rounded-2xl bg-white/5 border border-white/5 hover:bg-blue-700/10 transition text-right">
+                    <a href="https://www.linkedin.com/in/%D9%85%D8%AD%D9%85%D8%AF-%D9%85%D8%AD%D9%85%D9%88%D8%AF-%D8%A7%D9%84%D8%B1%D9%8A%D8%AD-51756738b" target="_blank" class="p-4 rounded-2xl bg-white/5 border border-white/5 hover:bg-blue-700/10 transition text-right">
                         <i class="fab fa-linkedin text-blue-600 mb-3 text-2xl"></i>
                         <p class="text-sm font-bold">لينكد إن</p>
                     </a>
-                    <a href="https://www.reddit.com/user/Accomplished_Dog2987" class="p-4 rounded-2xl bg-white/5 border border-white/5 hover:bg-orange-500/10 transition text-right">
+                    <a href="https://www.reddit.com/user/Accomplished_Dog2987" target="_blank" class="p-4 rounded-2xl bg-white/5 border border-white/5 hover:bg-orange-500/10 transition text-right">
                         <i class="fab fa-reddit text-orange-500 mb-3 text-2xl"></i>
                         <p class="text-sm font-bold">ريديت</p>
                     </a>
@@ -115,7 +133,7 @@
     </main>
 
     <footer class="py-12 border-t border-white/5 text-center text-gray-600 text-xs">
-        © 2026 وكالة MoMA AI - الدقة هي هويتنا
+        <p>© 2026 وكالة MoMA AI - الدقة هي هويتنا</p>
     </footer>
 
 </body>
