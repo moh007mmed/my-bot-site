@@ -5,75 +5,64 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>تجربة النظام الذكي | MoMA AI Labs</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { 
-            font-family: 'Tajawal', sans-serif; 
-            background-color: #030712; 
-            color: #ffffff; 
-            overflow: hidden; 
-            height: 100vh;
-        }
-
-        /* خلفية شبكية تقنية (Tech Grid) */
-        .bg-grid {
-            background-image: radial-gradient(#1e293b 1px, transparent 1px);
-            background-size: 40px 40px;
-            mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 70%, transparent 100%);
-        }
-
-        /* تأثير التوهج النيوني */
-        .neon-glow {
-            position: absolute;
-            bottom: -50px;
-            right: -50px;
-            width: 300px;
-            height: 300px;
-            background: radial-gradient(circle, rgba(59, 130, 246, 0.2) 0%, transparent 70%);
-            z-index: 1;
-        }
-
-        .glass-ui {
-            background: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        @keyframes floating {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
+        body { font-family: 'Tajawal', sans-serif; background-color: #030712; color: #ffffff; overflow-x: hidden; min-height: 100vh; }
+        .bg-grid { background-image: radial-gradient(#1e293b 1px, transparent 1px); background-size: 40px 40px; mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 70%, transparent 100%); }
+        .neon-glow { position: absolute; bottom: -50px; right: -50px; width: 300px; height: 300px; background: radial-gradient(circle, rgba(59, 130, 246, 0.2) 0%, transparent 70%); z-index: 1; }
+        .glass-ui { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        @keyframes floating { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
         .float-animation { animation: floating 3s ease-in-out infinite; }
     </style>
 </head>
-<body class="relative">
+<body class="relative" x-data="{ open: false }">
 
     <div class="absolute inset-0 bg-grid z-0"></div>
     <div class="neon-glow"></div>
 
     <nav class="fixed top-0 w-full z-50 border-b border-white/10 bg-black/80 backdrop-blur-lg">
-    <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
-        
-        <a href="index.html" class="text-3xl font-black tracking-tighter text-white">
-            MoMA <span class="text-blue-500">AI</span>
-        </a>
-        
-        <div class="hidden md:flex items-center space-x-reverse space-x-8 font-medium">
-            <a href="index.html" class="text-gray-400 hover:text-white transition">الرئيسية</a>
-            <a href="about.html" class="text-gray-400 hover:text-white transition">من نحن</a>
-            <a href="demo.html" class="text-blue-500">تجربة الديمو 🚀</a>
-            <a href="contact.html" class="text-gray-400 hover:text-white transition">تواصل معنا</a>
+        <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
+            <a href="index.html" class="text-3xl font-black tracking-tighter text-white">
+                MoMA <span class="text-blue-500">AI</span>
+            </a>
+            
+            <div class="hidden md:flex items-center space-x-reverse space-x-8 font-medium">
+                <a href="index.html" class="text-gray-400 hover:text-white transition">الرئيسية</a>
+                <a href="about.html" class="text-gray-400 hover:text-white transition">من نحن</a>
+                <a href="demo.html" class="text-blue-500 font-bold">تجربة الديمو 🚀</a>
+                <a href="contact.html" class="text-gray-400 hover:text-white transition">تواصل معنا</a>
+            </div>
+
+            <div class="hidden md:block">
+                <a href="index.html" class="px-5 py-2 rounded-full border border-white/10 text-sm font-medium hover:bg-white/5 transition flex items-center gap-2 text-white">
+                    <i class="fas fa-arrow-right"></i> العودة للموقع
+                </a>
+            </div>
+
+            <div class="md:hidden">
+                <button @click="open = !open" class="text-white focus:outline-none">
+                    <i class="fas" :class="open ? 'fa-times' : 'fa-bars'" style="font-size: 1.5rem;"></i>
+                </button>
+            </div>
         </div>
 
-        <a href="index.html" class="px-5 py-2 rounded-full border border-white/10 text-sm font-medium hover:bg-white/5 transition flex items-center gap-2 text-white">
-            <i class="fas fa-arrow-right"></i> العودة للموقع
-        </a>
-    </div>
-</nav>
+        <div x-show="open" 
+             x-transition:enter="transition ease-out duration-200"
+             x-transition:enter-start="opacity-0 -translate-y-4"
+             x-transition:enter-end="opacity-100 translate-y-0"
+             class="md:hidden bg-black/95 border-b border-white/10 px-6 py-8 space-y-6">
+            <a href="index.html" class="block text-xl font-bold text-gray-400">الرئيسية</a>
+            <a href="about.html" class="block text-xl font-bold text-gray-400">من نحن</a>
+            <a href="demo.html" class="block text-xl font-bold text-blue-500 underline">تجربة الديمو 🚀</a>
+            <a href="contact.html" class="block text-xl font-bold text-gray-400">تواصل معنا</a>
+            <hr class="border-white/10">
+            <a href="index.html" class="block text-center text-sm text-gray-500"><i class="fas fa-arrow-right ml-2"></i> العودة للموقع الرئيسي</a>
+        </div>
+    </nav>
 
-    <main class="relative z-10 h-[calc(100vh-80px)] flex items-center justify-center px-6">
-        
+    <main class="relative z-10 pt-32 pb-20 flex items-center justify-center px-6">
         <div class="grid lg:grid-cols-2 gap-16 max-w-6xl w-full items-center">
             
             <div class="text-right">
@@ -92,26 +81,49 @@
                 </p>
                 
                 <div class="grid grid-cols-2 gap-4">
-                    <div class="glass-ui p-4 rounded-2xl">
+                    <div class="glass-ui p-4 rounded-2xl shadow-lg">
                         <div class="text-blue-500 font-bold mb-1">سرعة الرد</div>
-                        <div class="text-2xl font-black">0.8s</div>
+                        <div class="text-2xl font-black uppercase">0.8s</div>
                     </div>
-                    <div class="glass-ui p-4 rounded-2xl">
+                    <div class="glass-ui p-4 rounded-2xl shadow-lg">
                         <div class="text-emerald-500 font-bold mb-1">توفير الوقت</div>
-                        <div class="text-2xl font-black">95%</div>
+                        <div class="text-2xl font-black uppercase">95%</div>
                     </div>
                 </div>
             </div>
 
-            <div class="hidden lg:block relative">
+            <div class="hidden lg:block relative float-animation">
                 <div class="glass-ui w-full h-[400px] rounded-3xl p-6 overflow-hidden relative shadow-2xl border-white/20">
-                    <div class="flex gap-2 mb-6">
+                    <div class="flex gap-2 mb-6 border-b border-white/5 pb-4">
                         <div class="w-3 h-3 rounded-full bg-red-500/50"></div>
                         <div class="w-3 h-3 rounded-full bg-yellow-500/50"></div>
                         <div class="w-3 h-3 rounded-full bg-green-500/50"></div>
+                        <span class="text-[10px] text-gray-500 mr-2 font-mono">moma_intelligence.py</span>
                     </div>
-                    <div class="space-y-4">
-                        <div class="h-4 w-3/4 bg-white/5 rounded"></div>
-                        <div class="h-4 w-1/2 bg-white/5 rounded"></div>
-                        <div class="h-32 w-full bg-white/5 rounded-2xl"></div>
+                    <div class="space-y-4 font-mono text-sm">
+                        <div class="h-4 w-3/4 bg-blue-500/10 rounded border border-blue-500/20"></div>
+                        <div class="h-4 w-1/2 bg-cyan-500/10 rounded border border-cyan-500/20"></div>
+                        <div class="h-32 w-full bg-white/5 rounded-2xl flex items-center justify-center border border-white/5">
+                            <span class="text-blue-400 text-xs tracking-widest opacity-50">STIMULATING_AI_MODELS...</span>
+                        </div>
                         <div class="grid grid-cols-3 gap-4">
+                            <div class="h-8 bg-white/5 rounded-lg border border-white/5"></div>
+                            <div class="h-8 bg-white/5 rounded-lg border border-white/5"></div>
+                            <div class="h-8 bg-white/5 rounded-lg border border-white/5"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="fixed bottom-0 w-full py-6 px-8 text-gray-600 text-[10px] flex justify-between items-center z-50">
+        <div>© 2026 MoMA AI | LABS</div>
+        <div class="flex gap-4">
+            <span class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> ALL SYSTEMS ONLINE</span>
+        </div>
+    </footer>
+
+</body>
+</html>
