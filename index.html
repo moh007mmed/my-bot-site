@@ -1,22 +1,113 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>معرض أعمال محمد لمحركات الدردشة الذكية</title>
+    <title>خدمات الذكاء الاصطناعي</title>
+
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); color: white; height: 100vh; display: flex; align-items: center; justify-content: center; margin: 0; text-align: center; }
-        .card { background: rgba(255, 255, 255, 0.1); padding: 40px; border-radius: 20px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
-        h1 { font-size: 2.5rem; margin-bottom: 10px; }
-        p { font-size: 1.2rem; opacity: 0.9; }
-        .status { color: #4eff4e; font-weight: bold; }
+        body {
+            font-family: Arial;
+            margin: 0;
+            background: #0f172a;
+            color: white;
+        }
+
+        header {
+            text-align: center;
+            padding: 60px;
+            background: linear-gradient(90deg, #0ea5e9, #6366f1);
+        }
+
+        h1 {
+            font-size: 40px;
+        }
+
+        .btn {
+            background: #22c55e;
+            padding: 15px 30px;
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            display: inline-block;
+            margin-top: 20px;
+        }
+
+        section {
+            padding: 50px;
+            text-align: center;
+        }
+
+        .services {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .card {
+            background: #1e293b;
+            padding: 20px;
+            border-radius: 15px;
+            width: 250px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: #020617;
+        }
     </style>
 </head>
+
 <body>
-    <div class="card">
-        <h1>مرحباً بك في عالم الذكاء الاصطناعي</h1>
-        <p>أنا متخصص في بناء مساعدين ذكيين لتطوير أعمالك.</p>
-        <p class="status">● البوت متاح حالياً للتجربة في الأسفل</p>
+
+<header>
+    <h1>🚀 خدمات الذكاء الاصطناعي للأعمال</h1>
+    <p>نساعدك في أتمتة مشروعك وزيادة أرباحك باستخدام AI</p>
+    <a href="#contact" class="btn">تواصل الآن</a>
+</header>
+
+<section>
+    <h2>💼 خدماتنا</h2>
+
+    <div class="services">
+        <div class="card">
+            <h3>🤖 شات بوت</h3>
+            <p>نصمم بوتات ذكية للرد على العملاء 24/7</p>
+        </div>
+
+        <div class="card">
+            <h3>📊 تحليل بيانات</h3>
+            <p>تحليل بيانات مشروعك لاتخاذ قرارات أفضل</p>
+        </div>
+
+        <div class="card">
+            <h3>⚙️ أتمتة</h3>
+            <p>نحول عملك اليدوي إلى نظام تلقائي</p>
+        </div>
     </div>
+</section>
+
+<section>
+    <h2>👨‍💻 من نحن</h2>
+    <p>
+        نحن نقدم حلول ذكاء اصطناعي لمساعدة أصحاب المشاريع
+        على النمو وزيادة الأرباح باستخدام أحدث التقنيات.
+    </p>
+</section>
+
+<section id="contact">
+    <h2>📞 تواصل معنا</h2>
+    <p>واتساب: 000000000</p>
+    <p>إيميل: example@email.com</p>
+
+    <a href="https://wa.me/000000000" class="btn">راسلنا على واتساب</a>
+</section>
+
+<footer>
+    <p>© 2026 جميع الحقوق محفوظة</p>
+</footer>
+
 </body>
 </html>
