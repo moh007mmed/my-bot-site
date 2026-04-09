@@ -3,78 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تجربة النظام الذكي | MoMA AI Labs - التنين المرشد</title>
+    <title>تجربة النظام الذكي | MoMA AI Labs - العميل السري للمبيعات</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { font-family: 'Tajawal', sans-serif; background-color: #030712; color: #ffffff; overflow-x: hidden; min-height: 100vh; position: relative; }
-        #canvas-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; opacity: 0.6; }
-        .glass-ui { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        body { font-family: 'Tajawal', sans-serif; background-color: #000; color: #ffffff; overflow-x: hidden; min-height: 100vh; position: relative; }
+        #canvas-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; opacity: 0.8; }
+        .glass-ui { background: rgba(10, 10, 10, 0.7); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.05); }
         
-        /* 🤖 أيقونة البوت النابضة */
+        /* 🤖 أيقونة البوت النابضة (الهدف) */
         .bot-trigger {
             position: fixed; bottom: 30px; right: 30px; width: 70px; height: 70px;
             background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
             border-radius: 50%; display: flex; items-center; justify-content: center;
             box-shadow: 0 0 30px rgba(59, 130, 246, 0.5); z-index: 100; cursor: pointer;
-            animation: pulse-blue 2s infinite;
+            animation: pulse-blue 2s infinite; transition: all 0.3s ease;
         }
+        .bot-trigger:hover { transform: scale(1.1); box-shadow: 0 0 50px rgba(59, 130, 246, 0.8); }
         @keyframes pulse-blue {
             0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7); }
             70% { box-shadow: 0 0 0 20px rgba(59, 130, 246, 0); }
             100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
         }
         
-        /* 🛣️ مسار التنين الضوئي (التوجيه السحري) */
-        .dragon-path {
-            position: fixed; top: 10vh; right: 10vw; width: 200px; height: 80vh;
-            border-right: 2px dashed rgba(59, 130, 246, 0.2);
+        /* 🛣️ مسار التوجيه المرئي (الشيء الجديد كلياً) */
+        .agent-path {
+            position: fixed; top: 15vh; left: 5vw; width: 300px; height: 70vh;
+            border-left: 2px dashed rgba(59, 130, 246, 0.2);
             border-bottom: 2px dashed rgba(59, 130, 246, 0.2);
-            border-radius: 0 0 50px 0; z-index: 2; pointer-events: none;
+            border-radius: 0 0 0 50px; z-index: 2; pointer-events: none;
         }
-        .dragon-path::after {
-            content: ''; position: absolute; bottom: -10px; right: -10px;
+        .agent-path::after {
+            content: ''; position: absolute; bottom: -10px; left: -10px;
             width: 20px; height: 20px; background: #3b82f6; border-radius: 50%;
             filter: blur(5px); animation: path-follow 4s linear infinite;
         }
         @keyframes path-follow {
-            0% { transform: translate(-200px, -80vh); opacity: 0; }
+            0% { transform: translate(-300px, -70vh); opacity: 0; }
             10% { opacity: 1; }
             90% { opacity: 1; }
             100% { transform: translate(0, 0); opacity: 0; }
         }
     </style>
 </head>
-<body x-data="{ open: false }">
+<body class="relative" x-data="{ open: false }">
 
     <div id="canvas-container"></div>
 
-    <div class="dragon-path"></div>
-
     <div class="bot-trigger">
-        <i class="fas fa-magic text-2xl text-white"></i>
+        <i class="fas fa-briefcase text-2xl text-white"></i>
     </div>
 
-    <nav class="fixed top-0 w-full z-50 border-b border-white/10 bg-black/90 backdrop-blur-lg h-20 flex items-center">
-        <div class="max-w-7xl mx-auto px-6 w-full flex justify-between items-center">
+    <nav class="fixed top-0 w-full z-50 border-b border-white/5 bg-black/90 backdrop-blur-lg h-20 flex items-center">
+        <div class="max-w-7xl mx-auto px-6 w-full flex justify-between items-center relative z-50">
             <a href="index.html" class="text-3xl font-black tracking-tighter text-white">
                 MoMA <span class="text-blue-500">AI</span>
             </a>
             
-            <div class="hidden md:flex items-center space-x-reverse space-x-8 font-medium relative z-10">
+            <div class="hidden md:flex items-center space-x-reverse space-x-8 font-medium">
                 <a href="index.html" class="text-gray-400 hover:text-white transition nav-link">الرئيسية</a>
                 <a href="about.html" class="text-gray-400 hover:text-white transition nav-link">من نحن</a>
                 <a href="demo.html" class="text-blue-500 font-bold underline nav-link">تجربة الديمو 🚀</a>
                 <a href="contact.html" class="text-gray-400 hover:text-white transition nav-link">تواصل معنا</a>
-            </div>
-
-            <div class="hidden md:block relative z-10">
-                <a href="index.html" class="px-5 py-2 rounded-full border border-white/10 text-sm font-medium hover:bg-white/5 transition flex items-center gap-2 text-white">
-                    <i class="fas fa-arrow-right"></i> العودة للموقع
-                </a>
             </div>
 
             <div class="md:hidden relative z-50">
@@ -89,12 +82,12 @@
              x-transition:enter-start="opacity-0 -translate-y-4"
              x-transition:enter-end="opacity-100 translate-y-0"
              @click.away="open = false"
-             class="fixed top-20 left-0 w-full z-40 bg-black/95 border-b border-white/10 px-6 py-8 space-y-6 md:hidden">
+             class="fixed top-20 left-0 w-full z-40 bg-black/95 border-b border-white/5 px-6 py-8 space-y-6 md:hidden">
             <a href="index.html" class="block text-xl font-bold text-gray-400">الرئيسية</a>
             <a href="about.html" class="block text-xl font-bold text-gray-400">من نحن</a>
             <a href="demo.html" class="block text-xl font-bold text-blue-500 underline">تجربة الديمو 🚀</a>
             <a href="contact.html" class="block text-xl font-bold text-gray-400">تواصل معنا</a>
-            <hr class="border-white/10">
+            <hr class="border-white/5">
             <a href="index.html" class="block text-center text-sm text-gray-500"><i class="fas fa-arrow-right ml-2"></i> العودة للموقع الرئيسي</a>
         </div>
     </nav>
@@ -102,46 +95,46 @@
     <main class="relative z-10 pt-40 pb-20 flex items-center justify-center px-6">
         <div class="grid lg:grid-cols-2 gap-16 max-w-6xl w-full items-center">
             
-            <div class="text-right space-y-6">
+            <div class="text-right space-y-6 relative z-10">
                 <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-bold mb-4">
                     <span class="relative flex h-2 w-2">
                         <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
                         <span class="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
                     </span>
-                    بيئة تجريبية أسطورية
+                    بيئة الأعمال الذكية
                 </div>
-                <h1 class="text-5xl md:text-7xl font-black leading-tight tracking-tight">
-                    حارس <br><span class="text-transparent bg-clip-text bg-gradient-to-l from-blue-400 to-cyan-400">الأنظمة الرقمية</span>
+                <h1 class="text-5xl md:text-7xl font-black leading-tight tracking-tight text-white">
+                    العميل <br><span class="text-transparent bg-clip-text bg-gradient-to-l from-blue-400 to-cyan-400">السري للمبيعات</span>
                 </h1>
                 <p class="text-gray-400 text-xl mb-10 max-w-xl leading-relaxed">
-                    استشعر قوة الذكاء الاصطناعي. اتبع مسار التنين المرشد في الأسفل، لقد تم برمجة هذا البوت ليفهم احتياجات عملائك بدقة متناهية.
+                    استشعر قوة الاحترافية. راقب كيف يقوم "خبير الصفقات" بتوجيهك. جرب التحدث مع البوت في الأسفل، لقد تم برمجته ليفهم احتياجات عملائك بدقة متناهية.
                 </p>
                 
                 <div class="grid grid-cols-2 gap-6 max-w-md">
                     <div class="glass-ui p-6 rounded-3xl text-center">
-                        <div class="text-blue-500 font-bold mb-1 italic">Response</div>
-                        <div class="text-3xl font-black uppercase tracking-widest">Instant</div>
+                        <div class="text-blue-500 font-bold mb-1 italic tracking-widest">Core</div>
+                        <div class="text-3xl font-black uppercase">MoMA G2</div>
                     </div>
                     <div class="glass-ui p-6 rounded-3xl text-center">
-                        <div class="text-emerald-500 font-bold mb-1 italic">Core AI</div>
-                        <div class="text-3xl font-black uppercase tracking-widest">MoMA_G1</div>
+                        <div class="text-emerald-500 font-bold mb-1 italic tracking-widest">Precision</div>
+                        <div class="text-3xl font-black uppercase">99.2%</div>
                     </div>
                 </div>
             </div>
 
-            <div class="hidden lg:block relative">
-                <div class="glass-ui w-full h-[450px] rounded-3xl p-8 relative overflow-hidden shadow-2xl border-white/20">
+            <div class="hidden lg:block relative z-10">
+                <div class="glass-ui w-full h-[450px] rounded-3xl p-8 relative overflow-hidden shadow-2xl border-white/5 bg-black/50">
                     <div class="flex gap-2 mb-8 border-b border-white/5 pb-4">
                         <div class="w-3 h-3 rounded-full bg-red-500/50"></div>
                         <div class="w-3 h-3 rounded-full bg-yellow-500/50"></div>
                         <div class="w-3 h-3 rounded-full bg-green-500/50"></div>
-                        <span class="text-[10px] text-gray-500 mr-2 font-mono">mythic_guardian.core</span>
+                        <span class="text-[10px] text-gray-500 mr-2 font-mono">business_agent_core.G2</span>
                     </div>
-                    <div class="space-y-6 opacity-30 font-mono text-xs">
-                        <div class="h-4 w-3/4 bg-blue-500/20 rounded"></div>
-                        <div class="h-4 w-1/2 bg-white/10 rounded"></div>
+                    <div class="space-y-6 font-mono text-xs text-gray-600">
+                        <div class="h-4 w-3/4 bg-blue-500/10 rounded"></div>
+                        <div class="h-4 w-1/2 bg-white/5 rounded"></div>
                         <div class="h-32 w-full bg-blue-500/5 rounded-2xl border border-blue-500/10 flex items-center justify-center">
-                             <i class="fas fa-magic text-blue-500 text-4xl animate-pulse"></i>
+                             <i class="fas fa-handshake text-blue-500 text-4xl animate-pulse"></i>
                         </div>
                         <div class="grid grid-cols-3 gap-4">
                             <div class="h-10 bg-white/5 rounded-lg border border-white/5"></div>
@@ -155,45 +148,73 @@
         </div>
     </main>
 
-    <footer class="fixed bottom-0 w-full py-6 px-8 text-gray-600 text-[10px] flex justify-between items-center z-50 border-t border-white/5 bg-black/90">
-        <div>© 2026 MoMA AI | MYTHIC LABS</div>
+    <footer class="fixed bottom-0 w-full py-6 px-8 text-gray-700 text-[10px] flex justify-between items-center z-50 border-t border-white/5 bg-black">
+        <div>© 2026 MoMA AI | BUSINESS LABS</div>
         <div class="flex gap-4">
-            <span class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span> GUARDIAN ACTIVE</span>
+            <span class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span> AGENT G2 ACTIVE</span>
         </div>
     </footer>
 
     <script>
-        // --- إعداد المشهد 3D للتنين الهولوغرافي ---
+        // --- إعداد المشهد 3D للعميل السري ---
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
         document.getElementById('canvas-container').appendChild(renderer.domElement);
 
-        // --- إنشاء مجسم التنين (أسلوب الشبكة السلكية Tech Wireframe) ---
-        // سنستخدم مجسماً معقداً ليعطي شكل التنين الأسطوري
-        const geometry = new THREE.TorusKnotGeometry( 3, 0.5, 200, 16, 2, 5 ); 
-        const material = new THREE.MeshPhongMaterial({ 
-            color: 0x3b82f6, 
-            wireframe: true, 
-            transparent: true, 
-            opacity: 0.2,
-            emissive: 0x2563eb,
-            emissiveIntensity: 0.5
-        });
-        const dragon = new THREE.Mesh(geometry, material);
-        scene.add(dragon);
+        // --- إنشاء مجسم العميل السري (شخص مرتدي حلة ونظارات MIB) ---
+        const agentGroup = new THREE.Group();
+
+        // 1. الجسم (الحلة - Cylinder)
+        const torsoGeo = new THREE.CylinderGeometry(0.8, 0.8, 2.5, 8);
+        const torsoMat = new THREE.MeshPhongMaterial({ color: 0x050505, wireframe: true, transparent: true, opacity: 0.1, emissive: 0x111111 });
+        const torso = new THREE.Mesh(torsoGeo, torsoMat);
+        agentGroup.add(torso);
+
+        // 2. الرأس (Sphere)
+        const headGeo = new THREE.SphereGeometry(0.5, 16, 16);
+        const headMat = new THREE.MeshPhongMaterial({ color: 0xeeeeee, wireframe: true });
+        const head = new THREE.Mesh(headGeo, headMat);
+        head.position.y = 1.7;
+        agentGroup.add(head);
+
+        // 3. النظارات (Toruses - MIB style)
+        const glassesGeo = new THREE.TorusGeometry(0.15, 0.01, 8, 16);
+        const glassesMat = new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.8 });
+        const leftLens = new THREE.Mesh(glassesGeo, glassesMat);
+        leftLens.position.set(0.2, 1.7, 0.45);
+        const rightLens = new THREE.Mesh(glassesGeo, glassesMat);
+        rightLens.position.set(-0.2, 1.7, 0.45);
+        agentGroup.add(leftLens, rightLens);
+
+        // 4. الذراع المشيرة (Cylinder)
+        const armGeo = new THREE.CylinderGeometry(0.15, 0.15, 1.5, 8);
+        const pointingArm = new THREE.Mesh(armGeo, torsoMat);
+        pointingArm.position.set(-1.1, 0.5, 0.3);
+        pointingArm.rotation.set(Math.PI / 4, Math.PI / 4, 0); // يشير للاسفل ولليمين
+        agentGroup.add(pointingArm);
+
+        // 5. اليد المشيرة (Sphere)
+        const handGeo = new THREE.SphereGeometry(0.15, 8, 8);
+        const pointingHand = new THREE.Mesh(handGeo, headMat);
+        pointingHand.position.set(-1.7, -0.1, 0.8);
+        agentGroup.add(pointingHand);
+
+        // إضافة العميل للمشهد
+        scene.add(agentGroup);
 
         // إضافة إضاءة
-        const ambientLight = new THREE.AmbientLight(0xffffff, 1);
+        const ambientLight = new THREE.AmbientLight(0xffffff, 1.5);
         scene.add(ambientLight);
-        const pointLight = new THREE.PointLight(0x3b82f6, 2);
+        const pointLight = new THREE.PointLight(0x3b82f6, 3);
         pointLight.position.set(5, 5, 5);
         scene.add(pointLight);
 
         camera.position.z = 10;
 
-        // --- نظام الحركة والتوجيه ---
+        // --- نظام التفاعل والتموضع السلس ---
         let mouseX = 0, mouseY = 0;
         document.addEventListener('mousemove', (e) => {
             mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
@@ -205,13 +226,13 @@
 
             const time = Date.now() * 0.001;
 
-            // دوران التنين وحركته الهولوغرافية
-            dragon.rotation.x = Math.sin(time * 0.2) * 0.5;
-            dragon.rotation.y += 0.002;
+            // دوران طفيف للعميل السري (طفو)
+            agentGroup.rotation.y = mouseX * 0.1;
+            agentGroup.rotation.x = -mouseY * 0.1 + Math.sin(time * 0.5) * 0.1;
             
-            // جعل التنين يميل ويتموضع خلف مسار التوجيه (يمين الشاشة)
-            dragon.position.x = 4 + (mouseX * 0.5);
-            dragon.position.y = -1 + (-mouseY * 0.5) + Math.sin(time) * 0.3;
+            // جعل العميل يتموضع بثبات خلف مسار التوجيه (شمال الشاشة) ويشير لليمين الأسفل
+            agentGroup.position.x = -6 + (mouseX * 0.3);
+            agentGroup.position.y = -2 + (-mouseY * 0.3) + Math.sin(time * 0.8) * 0.2;
 
             renderer.render(scene, camera);
         }
