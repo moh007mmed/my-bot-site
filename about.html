@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>من نحن | MoMA AI - تجربة ثلاثية الأبعاد</title>
+    <title>من نحن | محمد محمود الريح - MoMA AI</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -12,127 +12,176 @@
     
     <style>
         body { font-family: 'Tajawal', sans-serif; background-color: #000; color: #fff; overflow-x: hidden; }
-        #canvas-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
-        .glass-card { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.1); transition: 0.4s; }
-        .glass-card:hover { transform: translateZ(20px); border-color: #3b82f6; }
-        .hero-text { text-shadow: 0 0 20px rgba(59, 130, 246, 0.5); }
+        #canvas-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+        .glass-card { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.1); transition: 0.4s; z-index: 10; position: relative; }
+        .glass-card:hover { transform: translateY(-5px); border-color: #3b82f6; box-shadow: 0 10px 30px rgba(59, 130, 246, 0.1); }
+        .text-glow { text-shadow: 0 0 15px rgba(59, 130, 246, 0.6); }
+        .nav-link { transition: all 0.3s ease; }
+        .nav-link:hover { color: #3b82f6; text-shadow: 0 0 10px rgba(59, 130, 246, 0.5); }
     </style>
 </head>
 <body x-data="{ open: false }">
 
     <div id="canvas-container"></div>
 
-    <nav class="fixed top-0 w-full z-50 border-b border-white/10 bg-black/50 backdrop-blur-md px-8 h-20 flex justify-between items-center">
+    <nav class="fixed top-0 w-full z-50 border-b border-white/10 bg-black/60 backdrop-blur-xl px-8 h-20 flex justify-between items-center">
         <a href="index.html" class="text-3xl font-black tracking-tighter">MoMA <span class="text-blue-500">AI</span></a>
         <div class="hidden md:flex space-x-reverse space-x-8 font-medium">
-            <a href="index.html" class="hover:text-blue-500 transition">الرئيسية</a>
-            <a href="about.html" class="text-blue-500">من نحن</a>
-            <a href="demo.html" class="hover:text-blue-500 transition">تجربة الديمو 🚀</a>
-            <a href="contact.html" class="hover:text-blue-500 transition">تواصل معنا</a>
+            <a href="index.html" class="nav-link text-gray-400">الرئيسية</a>
+            <a href="about.html" class="text-blue-500 font-bold underline">من نحن</a>
+            <a href="demo.html" class="nav-link text-gray-400">تجربة الديمو 🚀</a>
+            <a href="contact.html" class="nav-link text-gray-400">تواصل معنا</a>
         </div>
-        <button @click="open = !open" class="md:hidden text-2xl"><i class="fas fa-bars"></i></button>
+        <button @click="open = !open" class="md:hidden text-white"><i class="fas fa-bars text-2xl"></i></button>
     </nav>
 
-    <main class="relative z-10 pt-40 px-6">
-        <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-20 items-center">
-            
-            <div class="text-right space-y-8">
-                <h1 class="text-5xl md:text-6xl font-black hero-text leading-tight">
-                    نصمم <span class="text-blue-500">المستقبل</span> <br> بدقة جراحية
+    <div x-show="open" class="fixed inset-0 z-40 bg-black/95 pt-24 px-8 md:hidden" @click.away="open = false">
+        <div class="flex flex-col gap-6 text-2xl font-bold">
+            <a href="index.html">الرئيسية</a>
+            <a href="about.html" class="text-blue-500">من نحن</a>
+            <a href="demo.html">تجربة الديمو 🚀</a>
+            <a href="contact.html">تواصل معنا</a>
+        </div>
+    </div>
+
+    <section class="relative z-10 pt-40 pb-20 px-6">
+        <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-16 items-center">
+            <div class="order-2 md:order-1 space-y-8">
+                <div class="inline-block px-4 py-1 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-400 text-sm font-bold tracking-widest uppercase">
+                    المؤسس والمطور
+                </div>
+                <h1 class="text-5xl md:text-7xl font-black text-glow leading-tight">
+                    محمد محمود <br> <span class="text-blue-500 italic">الريح</span>
                 </h1>
                 <p class="text-gray-400 text-xl leading-relaxed">
-                    في MoMA AI، قمنا بدمج دقة طب الأسنان مع ذكاء الخوارزميات. نحن لا نبرمج فقط، بل نصنع كيانات رقمية تتفاعل وتتطور لتخدم أعمالكم.
+                    طالب في كلية طب الأسنان ومطور أنظمة ذكاء اصطناعي. أؤمن بأن التقنية والطب يشتركان في هدف واحد: **الدقة المتناهية لتحسين حياة الإنسان.** في MoMA AI، نحوّل هذه الرؤية إلى واقع رقمي.
                 </p>
                 <div class="flex gap-4">
-                    <div class="glass-card p-4 rounded-2xl flex-1 text-center">
-                        <p class="text-3xl font-black text-blue-500">50+</p>
-                        <p class="text-xs text-gray-500 uppercase">مشروع ذكي</p>
-                    </div>
-                    <div class="glass-card p-4 rounded-2xl flex-1 text-center">
-                        <p class="text-3xl font-black text-blue-500">∞</p>
-                        <p class="text-xs text-gray-500 uppercase">أتمتة مطلقة</p>
-                    </div>
+                    <a href="https://wa.me/249118371830" class="bg-blue-600 hover:bg-blue-700 px-8 py-4 rounded-2xl font-bold transition-all flex items-center gap-3 shadow-lg shadow-blue-500/20">
+                        <i class="fab fa-whatsapp"></i> تواصل معي مباشرة
+                    </a>
                 </div>
             </div>
+            <div class="order-1 md:order-2 h-[350px] md:h-[500px] flex items-center justify-center relative">
+                <div class="absolute inset-0 bg-blue-500/5 blur-[120px] rounded-full"></div>
+                <p class="absolute bottom-0 text-[10px] text-gray-600 tracking-[0.5em] uppercase">Interactive 3D Core</p>
+            </div>
+        </div>
+    </section>
 
-            <div class="h-[400px] flex items-center justify-center">
-                <div class="hidden md:block text-blue-500/20 text-sm animate-pulse">
-                    حرك الماوس للتفاعل مع MoMA Bot
+    <section class="relative z-10 py-24 px-6">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-3xl font-black mb-16 text-center italic tracking-widest">مشاريعنا الرائدة <span class="text-blue-500">Portfolio</span></h2>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="glass-card p-8 rounded-3xl">
+                    <div class="w-12 h-12 rounded-2xl bg-blue-600 flex items-center justify-center mb-6 shadow-lg shadow-blue-500/40">
+                        <i class="fas fa-tooth text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Dental Booking AI</h3>
+                    <p class="text-gray-500 text-sm leading-relaxed mb-6">نظام أتمتة متكامل لعيادات الأسنان يقوم بحجز المواعيد وتذكير المرضى عبر الواتساب بدقة احترافية.</p>
+                    <span class="px-3 py-1 rounded-full bg-blue-500/10 text-blue-400 text-[10px] font-bold">نشط حالياً ✅</span>
+                </div>
+
+                <div class="glass-card p-8 rounded-3xl">
+                    <div class="w-12 h-12 rounded-2xl bg-cyan-600 flex items-center justify-center mb-6 shadow-lg shadow-cyan-500/40">
+                        <i class="fas fa-shopping-bag text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">HAYA Store Bot</h3>
+                    <p class="text-gray-500 text-sm leading-relaxed mb-6">بوت ذكي لإدارة المتاجر الإلكترونية، يتعامل مع الطلبات والعملاء بشكل تلقائي تماماً.</p>
+                    <span class="px-3 py-1 rounded-full bg-cyan-500/10 text-cyan-400 text-[10px] font-bold">قيد النمو 📈</span>
+                </div>
+
+                <div class="glass-card p-8 rounded-3xl">
+                    <div class="w-12 h-12 rounded-2xl bg-indigo-600 flex items-center justify-center mb-6 shadow-lg shadow-indigo-500/40">
+                        <i class="fas fa-microchip text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Workflow Automation</h3>
+                    <p class="text-gray-500 text-sm leading-relaxed mb-6">ربط الأنظمة وتوليد التقارير الذكية باستخدام n8n وGoogle Sheets لتوفير الوقت والجهد.</p>
+                    <span class="px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-400 text-[10px] font-bold">الوطن العربي 🌍</span>
                 </div>
             </div>
         </div>
-    </main>
+    </section>
+
+    <footer class="relative z-10 py-12 border-t border-white/5 text-center">
+        <p class="text-gray-600 text-[10px] uppercase tracking-[0.4em]">صنع بشغف بواسطة فريق MoMA AI | 2026</p>
+    </footer>
 
     <script>
-        // --- إعداد العالم ثلاثي الأبعاد ---
+        // --- إعداد المشهد ثلاثي الأبعاد ---
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
         document.getElementById('canvas-container').appendChild(renderer.domElement);
 
-        // --- إضافة إضاءة ---
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+        // --- الإضاءة ---
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
         scene.add(ambientLight);
-        const pointLight = new THREE.PointLight(0x3b82f6, 2);
-        pointLight.position.set(5, 5, 5);
-        scene.add(pointLight);
+        const pLight = new THREE.PointLight(0x3b82f6, 5);
+        pLight.position.set(5, 5, 5);
+        scene.add(pLight);
 
-        // --- بناء شخصية MoMA Bot (الأفاتار التفاعلي) ---
-        const group = new THREE.Group();
+        // --- بناء الروبوت التفاعلي (MoMA BOT) ---
+        const botGroup = new THREE.Group();
 
-        // الرأس (مجسم كروي)
-        const headGeo = new THREE.SphereGeometry(1, 32, 32);
-        const headMat = new THREE.MeshPhongMaterial({ color: 0x111111, shininess: 100, emissive: 0x0a0a0a });
-        const head = new THREE.Mesh(headGeo, headMat);
-        group.add(head);
+        // الجسم/الرأس
+        const geometry = new THREE.IcosahedronGeometry(1.2, 1);
+        const material = new THREE.MeshPhongMaterial({ 
+            color: 0x0a0a0a, 
+            wireframe: true, 
+            emissive: 0x3b82f6,
+            emissiveIntensity: 0.2
+        });
+        const botBody = new THREE.Mesh(geometry, material);
+        botGroup.add(botBody);
 
-        // العيون (تضيء)
+        // العيون المضيئة
         const eyeGeo = new THREE.SphereGeometry(0.15, 16, 16);
         const eyeMat = new THREE.MeshBasicMaterial({ color: 0x3b82f6 });
-        const leftEye = new THREE.Mesh(eyeGeo, eyeMat);
-        leftEye.position.set(0.4, 0.2, 0.8);
-        const rightEye = new THREE.Mesh(eyeGeo, eyeMat);
-        rightEye.position.set(-0.4, 0.2, 0.8);
-        head.add(leftEye, rightEye);
+        const eyeL = new THREE.Mesh(eyeGeo, eyeMat);
+        eyeL.position.set(0.4, 0.3, 1);
+        const eyeR = new THREE.Mesh(eyeGeo, eyeMat);
+        eyeR.position.set(-0.4, 0.3, 1);
+        botGroup.add(eyeL, eyeR);
 
-        // حلقة طاقة حول الرأس
-        const ringGeo = new THREE.TorusGeometry(1.4, 0.02, 16, 100);
-        const ringMat = new THREE.MeshBasicMaterial({ color: 0x3b82f6, transparent: true, opacity: 0.3 });
+        // حلقة الطاقة
+        const ringGeo = new THREE.TorusGeometry(1.8, 0.01, 16, 100);
+        const ringMat = new THREE.MeshBasicMaterial({ color: 0x3b82f6, transparent: true, opacity: 0.2 });
         const ring = new THREE.Mesh(ringGeo, ringMat);
-        ring.rotation.x = Math.PI/2;
-        group.add(ring);
+        ring.rotation.x = Math.PI / 2;
+        botGroup.add(ring);
 
-        scene.add(group);
+        scene.add(botGroup);
         camera.position.z = 5;
 
-        // --- التفاعل مع الماوس ---
-        let mouseX = 0;
-        let mouseY = 0;
+        // --- نظام التفاعل ---
+        let mouseX = 0, mouseY = 0;
         document.addEventListener('mousemove', (e) => {
             mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
             mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
         });
 
-        // --- التحريك المستمر ---
         function animate() {
             requestAnimationFrame(animate);
-
-            // تتبع الماوس بسلاسة
-            group.rotation.y += (mouseX * 0.5 - group.rotation.y) * 0.1;
-            group.rotation.x += (-mouseY * 0.5 - group.rotation.x) * 0.1;
             
-            // طفو الشخصية للأعلى والأسفل (Floating)
-            group.position.y = Math.sin(Date.now() * 0.002) * 0.2;
+            // الروبوت يلحق الماوس بسلاسة
+            botGroup.rotation.y += (mouseX * 0.8 - botGroup.rotation.y) * 0.05;
+            botGroup.rotation.x += (-mouseY * 0.8 - botGroup.rotation.x) * 0.05;
             
-            // دوران الحلقة
-            ring.rotation.z += 0.01;
+            // طفو هادئ
+            botGroup.position.y = Math.sin(Date.now() * 0.001) * 0.1;
+            
+            // دوران الحلقة والشبكة
+            ring.rotation.z += 0.005;
+            botBody.rotation.z += 0.001;
 
             renderer.render(scene, camera);
         }
         animate();
 
-        // تحديث الحجم عند تغيير نافذة المتصفح
         window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
