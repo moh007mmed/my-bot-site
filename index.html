@@ -3,108 +3,265 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>خدمات أتمتة الذكاء الاصطناعي | محمد محمود</title>
+    <title>محمد محمود | حلول الذكاء الاصطناعي للأعمال</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap');
-        body { font-family: 'Tajawal', sans-serif; }
-        .gradient-bg { background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%); }
+        body { font-family: 'Tajawal', sans-serif; scroll-behavior: smooth; }
+        .hero-gradient { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); }
+        .card-hover:hover { transform: translateY(-10px); transition: all 0.3s ease; }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-800">
+<body class="bg-slate-50 text-slate-900">
 
-    <nav class="bg-white shadow-lg fixed w-full z-50">
-        <div class="max-w-6xl mx-auto px-4">
-            <div class="flex justify-between items-center h-16">
-                <div class="text-2xl font-bold text-blue-600">AI SOLUTIONS</div>
-                <div class="hidden md:flex space-x-reverse space-x-8">
-                    <a href="#home" class="hover:text-blue-600 transition">الرئيسية</a>
-                    <a href="#services" class="hover:text-blue-600 transition">خدماتنا</a>
-                    <a href="#about" class="hover:text-blue-600 transition">عن المشروع</a>
-                    <a href="#contact" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">اتصل بنا</a>
-                </div>
+    <nav class="fixed w-full bg-white/90 backdrop-blur-md shadow-sm z-50">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="text-2xl font-black text-blue-600 tracking-tighter">M.ALRYAH <span class="text-slate-800">AI</span></div>
+            <div class="hidden lg:flex items-center space-x-reverse space-x-8 font-medium text-slate-600">
+                <a href="#home" class="hover:text-blue-600 transition">الرئيسية</a>
+                <a href="#services" class="hover:text-blue-600 transition">الخدمات</a>
+                <a href="#pricing" class="hover:text-blue-600 transition">الأسعار</a>
+                <a href="#portfolio" class="hover:text-blue-600 transition">أعمالنا</a>
+                <a href="#about" class="hover:text-blue-600 transition">من نحن</a>
+                <a href="#contact" class="hover:text-blue-600 transition">تواصل معنا</a>
+                <a href="#contact" class="bg-blue-600 text-white px-6 py-2 rounded-full hover:bg-blue-700 transition shadow-lg shadow-blue-200">ابدأ الآن</a>
             </div>
+            <div class="lg:hidden text-2xl"><i class="fas fa-bars"></i></div>
         </div>
     </nav>
 
-    <section id="home" class="gradient-bg pt-32 pb-20 text-white text-center px-4">
-        <div class="max-w-4xl mx-auto">
-            <h1 class="text-4xl md:text-6xl font-bold mb-6">حوّل عملك إلى نظام ذكي يعمل ذاتياً</h1>
-            <p class="text-xl mb-10 text-gray-300">نساعد الشركات على دمج حلول الذكاء الاصطناعي (LLMs) وأتمتة المهام لزيادة الإنتاجية وتقليل التكاليف.</p>
-            <div class="flex justify-center gap-4">
-                <a href="#services" class="bg-blue-600 px-8 py-3 rounded-full font-bold hover:bg-blue-700 transition">استكشف الخدمات</a>
-                <a href="#contact" class="border border-white px-8 py-3 rounded-full font-bold hover:bg-white hover:text-gray-900 transition">طلب استشارة</a>
-            </div>
-        </div>
-    </section>
-
-    <section id="services" class="py-20 px-4 max-w-6xl mx-auto">
-        <h2 class="text-3xl font-bold text-center mb-16">خدماتنا المتقدمة</h2>
-        <div class="grid md:grid-cols-3 gap-8">
-            <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition">
-                <div class="text-blue-600 text-4xl mb-4"><i class="fas fa-robot"></i></div>
-                <h3 class="text-xl font-bold mb-3">شات بوت مخصص (AI Chatbots)</h3>
-                <p class="text-gray-600">بناء وتطوير بوتات ذكية مدربة على بيانات مشروعك لخدمة العملاء وحجز المواعيد على مدار الساعة.</p>
-            </div>
-            <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition">
-                <div class="text-blue-600 text-4xl mb-4"><i class="fas fa-network-wired"></i></div>
-                <h3 class="text-xl font-bold mb-3">أتمتة سير العمل (Workflows)</h3>
-                <p class="text-gray-600">ربط أدواتك المفضلة (Google Sheets, Gmail, CRM) باستخدام n8n و Make لتعمل بشكل آلي تماماً.</p>
-            </div>
-            <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition">
-                <div class="text-blue-600 text-4xl mb-4"><i class="fas fa-brain"></i></div>
-                <h3 class="text-xl font-bold mb-3">دمج نماذج LLM</h3>
-                <p class="text-gray-600">ربط موديلات مثل GPT-4 أو Claude بأنظمتك الخاصة لتحليل البيانات وتوليد المحتوى بذكاء.</p>
-            </div>
-        </div>
-    </section>
-
-    <section class="bg-gray-100 py-16">
-        <div class="max-w-4xl mx-auto px-4 text-center">
-            <h2 class="text-2xl font-bold mb-8">التقنيات التي نستخدمها</h2>
-            <div class="flex flex-wrap justify-center gap-8 opacity-60 grayscale hover:grayscale-0 transition">
-                <span class="font-bold text-xl">OpenAI</span>
-                <span class="font-bold text-xl">n8n</span>
-                <span class="font-bold text-xl">Botpress</span>
-                <span class="font-bold text-xl">Python</span>
-                <span class="font-bold text-xl">LangChain</span>
-            </div>
-        </div>
-    </section>
-
-    <section id="contact" class="py-20 px-4 max-w-4xl mx-auto">
-        <div class="bg-white rounded-3xl shadow-xl overflow-hidden flex flex-col md:flex-row">
-            <div class="bg-blue-600 p-10 text-white md:w-1/3">
-                <h3 class="text-2xl font-bold mb-6">اترك لنا رسالة</h3>
-                <p class="mb-8 text-blue-100">سنتواصل معك لمناقشة كيف يمكن للذكاء الاصطناعي تطوير مشروعك.</p>
-                <div class="space-y-4">
-                    <p><i class="fab fa-whatsapp ml-2"></i> واتساب</p>
-                    <p><i class="fas fa-envelope ml-2"></i> البريد الإلكتروني</p>
+    <section id="home" class="hero-gradient pt-40 pb-24 text-white px-6">
+        <div class="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-12">
+            <div class="lg:w-1/2 text-center lg:text-right">
+                <h1 class="text-4xl md:text-6xl font-black leading-tight mb-6">
+                    نحول مشروعك إلى <span class="text-blue-400">نظام ذكي</span> يعمل 24/7 بدون تعب
+                </h1>
+                <p class="text-lg text-slate-300 mb-10 leading-relaxed">
+                    نقدم حلولاً متكاملة لربط أدوات الذكاء الاصطناعي وأتمتة العمليات اليومية لتوفير الوقت وزيادة أرباحك بأحدث التقنيات العالمية.
+                </p>
+                <div class="flex flex-col sm:flex-row justify-center lg:justify-start gap-4">
+                    <a href="#contact" class="bg-blue-600 px-10 py-4 rounded-xl font-bold text-lg hover:bg-blue-700 shadow-xl shadow-blue-900/20">احجز استشارتك المجانية</a>
+                    <a href="#portfolio" class="border border-slate-500 px-10 py-4 rounded-xl font-bold text-lg hover:bg-white/10">مشاهدة أعمالنا</a>
                 </div>
             </div>
-            <div class="p-10 md:w-2/3">
-                <form action="#" class="space-y-4">
-                    <div>
-                        <label class="block text-sm font-medium mb-1">الاسم الكريم</label>
-                        <input type="text" class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 outline-none">
+            <div class="lg:w-1/2 flex justify-center">
+                <div class="relative w-72 h-72 md:w-96 md:h-96 bg-blue-500/10 rounded-full flex items-center justify-center border border-blue-500/20 animate-pulse">
+                    <i class="fas fa-brain text-8xl md:text-[12rem] text-blue-500 shadow-blue-500 drop-shadow-2xl"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="services" class="py-24 px-6 bg-white">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-black mb-4">خدماتنا الاحترافية</h2>
+                <div class="h-1.5 w-20 bg-blue-600 mx-auto rounded-full"></div>
+            </div>
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="p-8 rounded-3xl bg-slate-50 border border-slate-100 card-hover shadow-sm">
+                    <div class="w-14 h-14 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center text-2xl mb-6"><i class="fas fa-robot"></i></div>
+                    <h3 class="text-xl font-bold mb-4">شات بوت ذكي</h3>
+                    <p class="text-slate-600 leading-relaxed">بناء أنظمة محادثة تفاعلية تفهم عملاءك وتجيب على استفساراتهم بدقة متناهية.</p>
+                </div>
+                <div class="p-8 rounded-3xl bg-slate-50 border border-slate-100 card-hover shadow-sm">
+                    <div class="w-14 h-14 bg-green-100 text-green-600 rounded-2xl flex items-center justify-center text-2xl mb-6"><i class="fas fa-cogs"></i></div>
+                    <h3 class="text-xl font-bold mb-4">أتمتة العمليات</h3>
+                    <p class="text-slate-600 leading-relaxed">ربط التطبيقات ببعضها لتعمل بشكل تلقائي (Workflow Automation) وتوفير جهدك البشري.</p>
+                </div>
+                <div class="p-8 rounded-3xl bg-slate-50 border border-slate-100 card-hover shadow-sm">
+                    <div class="w-14 h-14 bg-purple-100 text-purple-600 rounded-2xl flex items-center justify-center text-2xl mb-6"><i class="fas fa-shopping-cart"></i></div>
+                    <h3 class="text-xl font-bold mb-4">AI للمتاجر</h3>
+                    <p class="text-slate-600 leading-relaxed">دمج الذكاء الاصطناعي في متجرك لتحليل سلوك المشترين وزيادة معدل التحويل.</p>
+                </div>
+                <div class="p-8 rounded-3xl bg-slate-50 border border-slate-100 card-hover shadow-sm">
+                    <div class="w-14 h-14 bg-orange-100 text-orange-600 rounded-2xl flex items-center justify-center text-2xl mb-6"><i class="fas fa-calendar-alt"></i></div>
+                    <h3 class="text-xl font-bold mb-4">نظام حجز آلي</h3>
+                    <p class="text-slate-600 leading-relaxed">تنسيق المواعيد والجداول الزمنية تلقائياً دون أي تدخل يدوي منك.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="pricing" class="py-24 px-6 bg-slate-50">
+        <div class="max-w-7xl mx-auto text-center">
+            <h2 class="text-3xl md:text-4xl font-black mb-16 text-slate-900">باقات الاستثمار</h2>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-white p-10 rounded-3xl border border-slate-200 hover:border-blue-500 transition shadow-sm relative overflow-hidden">
+                    <h3 class="text-xl font-bold mb-4 text-slate-500">Basic</h3>
+                    <div class="text-4xl font-black mb-6">$199 <span class="text-sm font-normal text-slate-400">/ لمرة واحدة</span></div>
+                    <ul class="text-right space-y-4 mb-10 text-slate-600">
+                        <li><i class="fas fa-check text-green-500 ml-2"></i> شات بوت أساسي</li>
+                        <li><i class="fas fa-check text-green-500 ml-2"></i> ربط مع تطبيق واحد</li>
+                        <li><i class="fas fa-check text-green-500 ml-2"></i> دعم فني لمدة أسبوع</li>
+                    </ul>
+                    <a href="#contact" class="block w-full py-3 border-2 border-blue-600 text-blue-600 rounded-xl font-bold hover:bg-blue-600 hover:text-white transition">اطلب الآن</a>
+                </div>
+                <div class="bg-white p-10 rounded-3xl border-4 border-blue-600 shadow-2xl relative scale-105 z-10">
+                    <div class="absolute top-0 left-1/2 -translate-x-1/2 bg-blue-600 text-white px-6 py-1 rounded-b-xl text-sm font-bold">الأكثر طلباً</div>
+                    <h3 class="text-xl font-bold mb-4 text-blue-600">Pro</h3>
+                    <div class="text-4xl font-black mb-6">$499 <span class="text-sm font-normal text-slate-400">/ لمرة واحدة</span></div>
+                    <ul class="text-right space-y-4 mb-10 text-slate-600">
+                        <li><i class="fas fa-check text-green-500 ml-2"></i> بوت متقدم بذكاء GPT-4</li>
+                        <li><i class="fas fa-check text-green-500 ml-2"></i> أتمتة كاملة لـ 3 عمليات</li>
+                        <li><i class="fas fa-check text-green-500 ml-2"></i> تدريب على بياناتك الخاصة</li>
+                        <li><i class="fas fa-check text-green-500 ml-2"></i> دعم فني لمدة شهر</li>
+                    </ul>
+                    <a href="#contact" class="block w-full py-3 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 shadow-lg shadow-blue-200 transition">اطلب الآن</a>
+                </div>
+                <div class="bg-white p-10 rounded-3xl border border-slate-200 hover:border-blue-500 transition shadow-sm">
+                    <h3 class="text-xl font-bold mb-4 text-purple-600">Premium</h3>
+                    <div class="text-4xl font-black mb-6">اتصل بنا</div>
+                    <ul class="text-right space-y-4 mb-10 text-slate-600">
+                        <li><i class="fas fa-check text-green-500 ml-2"></i> نظام مؤسسات متكامل</li>
+                        <li><i class="fas fa-check text-green-500 ml-2"></i> ربط API مخصص</li>
+                        <li><i class="fas fa-check text-green-500 ml-2"></i> صيانة ودعم 24/7</li>
+                    </ul>
+                    <a href="#contact" class="block w-full py-3 border-2 border-purple-600 text-purple-600 rounded-xl font-bold hover:bg-purple-600 hover:text-white transition">تواصل معنا</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="portfolio" class="py-24 px-6 bg-white">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="text-3xl font-black text-center mb-16">معرض أعمالنا</h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="group relative rounded-3xl overflow-hidden shadow-lg h-64">
+                    <div class="absolute inset-0 bg-blue-900/80 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                        <h4 class="text-xl font-bold text-white mb-2">بوت عيادة طبية</h4>
+                        <p class="text-blue-200">نظام حجز آلي متكامل</p>
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium mb-1">نوع المشروع</label>
-                        <input type="text" class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 outline-none">
+                    <div class="bg-slate-200 w-full h-full flex items-center justify-center text-slate-400">
+                        <i class="fas fa-image text-5xl"></i>
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium mb-1">كيف يمكننا مساعدتك؟</label>
-                        <textarea class="w-full border border-gray-300 rounded-lg p-2 h-32 focus:ring-2 focus:ring-blue-500 outline-none"></textarea>
+                </div>
+                <div class="group relative rounded-3xl overflow-hidden shadow-lg h-64">
+                    <div class="absolute inset-0 bg-blue-900/80 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                        <h4 class="text-xl font-bold text-white mb-2">أتمتة مبيعات</h4>
+                        <p class="text-blue-200">ربط متجر بـ Google Sheets</p>
                     </div>
-                    <button class="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700">إرسال الطلب</button>
+                    <div class="bg-slate-200 w-full h-full flex items-center justify-center text-slate-400">
+                        <i class="fas fa-image text-5xl"></i>
+                    </div>
+                </div>
+                <div class="group relative rounded-3xl overflow-hidden shadow-lg h-64">
+                    <div class="absolute inset-0 bg-blue-900/80 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                        <h4 class="text-xl font-bold text-white mb-2">بوابة دفع ذكية</h4>
+                        <p class="text-blue-200">نظام تحصيل وتنبيهات</p>
+                    </div>
+                    <div class="bg-slate-200 w-full h-full flex items-center justify-center text-slate-400">
+                        <i class="fas fa-image text-5xl"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-20 px-6 bg-blue-600 text-white">
+        <div class="max-w-7xl mx-auto grid md:grid-cols-2 lg:grid-cols-4 gap-10 text-center">
+            <div>
+                <div class="text-4xl mb-4"><i class="fas fa-bolt"></i></div>
+                <h4 class="text-xl font-bold mb-2">سرعة التنفيذ</h4>
+                <p class="text-blue-100">نقل مشروعك من فكرة إلى واقع في أيام قليلة.</p>
+            </div>
+            <div>
+                <div class="text-4xl mb-4"><i class="fas fa-brain"></i></div>
+                <h4 class="text-xl font-bold mb-2">تقنيات حديثة</h4>
+                <p class="text-blue-100">نستخدم أحدث موديلات الذكاء الاصطناعي العالمية.</p>
+            </div>
+            <div>
+                <div class="text-4xl mb-4"><i class="fas fa-headset"></i></div>
+                <h4 class="text-xl font-bold mb-2">دعم مستمر</h4>
+                <p class="text-blue-100">فريقنا معك خطوة بخطوة بعد الإطلاق.</p>
+            </div>
+            <div>
+                <div class="text-4xl mb-4"><i class="fas fa-lightbulb"></i></div>
+                <h4 class="text-xl font-bold mb-2">حلول مخصصة</h4>
+                <p class="text-blue-100">لا نؤمن بالحلول الجاهزة، بل ما يناسب عملك فقط.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="py-24 px-6 bg-white">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-3xl font-black mb-8">من نحن</h2>
+            <div class="bg-slate-50 p-10 rounded-[3rem] border border-slate-100 shadow-sm">
+                <p class="text-xl leading-relaxed text-slate-700">
+                    أنا <strong>محمد محمود الريح</strong>، متخصص في بناء أنظمة الأتمتة ودمج تقنيات الذكاء الاصطناعي في بيئات العمل. شغفي يكمن في مساعدة أصحاب المشاريع على التخلص من المهام الروتينية والتركيز على الإبداع والنمو من خلال حلول تقنية مبتكرة وموثوقة.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-24 px-6 bg-slate-50">
+        <div class="max-w-7xl mx-auto text-center">
+            <h2 class="text-3xl font-black mb-16">ماذا يقول عملاؤنا</h2>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-white p-8 rounded-3xl shadow-sm text-right">
+                    <p class="text-slate-600 mb-6 italic">"ساعدني محمد في أتمتة نظام الحجوزات لعيادتي، الأمر الذي وفر علينا الكثير من الجهد والوقت الضائع."</p>
+                    <h5 class="font-bold">- د. أحمد علي</h5>
+                </div>
+                <div class="bg-white p-8 rounded-3xl shadow-sm text-right">
+                    <p class="text-slate-600 mb-6 italic">"البوت الذي قام بتصميمه لمتجري زاد من سرعة الرد على العملاء بشكل ملحوظ جداً."</p>
+                    <h5 class="font-bold">- أ. سارة فؤاد</h5>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="py-24 px-6 bg-white">
+        <div class="max-w-7xl mx-auto flex flex-col lg:flex-row gap-16">
+            <div class="lg:w-1/2">
+                <h2 class="text-3xl font-black mb-6">دعنا نتحدث عن مشروعك القادم</h2>
+                <p class="text-slate-600 mb-10 text-lg leading-relaxed">إذا كنت مستعداً لنقل مشروعك إلى المستوى التالي، لا تتردد في التواصل معي الآن.</p>
+                <div class="space-y-6">
+                    <a href="https://wa.me/249118371830" class="flex items-center gap-6 p-6 rounded-2xl bg-green-50 border border-green-100 hover:shadow-md transition">
+                        <i class="fab fa-whatsapp text-4xl text-green-500"></i>
+                        <div>
+                            <span class="block font-bold">تحدث عبر واتساب</span>
+                            <span class="text-slate-500 text-sm font-mono">+249118371830</span>
+                        </div>
+                    </a>
+                    <div class="flex items-center gap-6 p-6 rounded-2xl bg-blue-50 border border-blue-100">
+                        <i class="fas fa-envelope text-4xl text-blue-500"></i>
+                        <div>
+                            <span class="block font-bold">البريد الإلكتروني</span>
+                            <span class="text-slate-500 text-sm font-mono">mohammedmahmod00x00x@gmail.com</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="lg:w-1/2">
+                <form class="bg-slate-50 p-8 rounded-3xl border border-slate-100 shadow-xl space-y-4">
+                    <input type="text" placeholder="الاسم الكامل" class="w-full p-4 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-blue-600 transition">
+                    <input type="email" placeholder="البريد الإلكتروني" class="w-full p-4 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-blue-600 transition">
+                    <select class="w-full p-4 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-blue-600 transition">
+                        <option>اختر الخدمة المطلوبة</option>
+                        <option>شات بوت ذكي</option>
+                        <option>أتمتة عمليات</option>
+                        <option>استشارة تقنية</option>
+                    </select>
+                    <textarea rows="4" placeholder="أخبرنا عن مشروعك..." class="w-full p-4 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-blue-600 transition"></textarea>
+                    <button class="w-full py-4 bg-blue-600 text-white rounded-xl font-bold text-lg hover:bg-blue-700 transition">إرسال الطلب</button>
                 </form>
             </div>
         </div>
     </section>
 
-    <footer class="py-10 text-center text-gray-500 border-t">
-        <p>© 2026 جميع الحقوق محفوظة - محمد محمود الريح</p>
+    <footer class="py-12 px-6 bg-slate-900 text-white">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
+            <div class="text-2xl font-black text-blue-500 tracking-tighter">M.ALRYAH <span class="text-white">AI</span></div>
+            <div class="flex gap-6 text-slate-400">
+                <a href="#" class="hover:text-white transition"><i class="fab fa-linkedin-in text-xl"></i></a>
+                <a href="#" class="hover:text-white transition"><i class="fab fa-twitter text-xl"></i></a>
+                <a href="#" class="hover:text-white transition"><i class="fab fa-github text-xl"></i></a>
+            </div>
+            <div class="text-slate-500 text-sm">
+                &copy; 2026 محمد محمود الريح. جميع الحقوق محفوظة.
+            </div>
+        </div>
     </footer>
 
 </body>
