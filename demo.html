@@ -52,12 +52,25 @@
     <div class="absolute inset-0 bg-grid z-0"></div>
     <div class="neon-glow"></div>
 
-    <nav class="relative z-50 flex justify-between items-center px-8 py-6 backdrop-blur-md border-b border-white/5">
-        <div class="text-2xl font-black tracking-tighter">MoMA <span class="text-blue-500">AI</span></div>
-        <a href="index.html" class="px-5 py-2 rounded-full border border-white/10 text-sm font-medium hover:bg-white/5 transition">
-            <i class="fas fa-arrow-right ml-2"></i> العودة للموقع
+    <nav class="fixed top-0 w-full z-50 border-b border-white/10 bg-black/80 backdrop-blur-lg">
+    <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
+        
+        <a href="index.html" class="text-3xl font-black tracking-tighter text-white">
+            MoMA <span class="text-blue-500">AI</span>
         </a>
-    </nav>
+        
+        <div class="hidden md:flex items-center space-x-reverse space-x-8 font-medium">
+            <a href="index.html" class="text-gray-400 hover:text-white transition">الرئيسية</a>
+            <a href="about.html" class="text-gray-400 hover:text-white transition">من نحن</a>
+            <a href="demo.html" class="text-blue-500">تجربة الديمو 🚀</a>
+            <a href="contact.html" class="text-gray-400 hover:text-white transition">تواصل معنا</a>
+        </div>
+
+        <a href="index.html" class="px-5 py-2 rounded-full border border-white/10 text-sm font-medium hover:bg-white/5 transition flex items-center gap-2 text-white">
+            <i class="fas fa-arrow-right"></i> العودة للموقع
+        </a>
+    </div>
+</nav>
 
     <main class="relative z-10 h-[calc(100vh-80px)] flex items-center justify-center px-6">
         
