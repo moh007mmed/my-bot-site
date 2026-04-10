@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MoMA AI | تجربة البوت الذكي</title>
+    <title>MoMA AI | مركز الصفقات الذكي</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
@@ -11,157 +11,185 @@
     <style>
         body {
             font-family: 'Tajawal', sans-serif;
-            background: radial-gradient(circle at center, #111827 0%, #000 100%);
+            background-color: #000;
             color: #fff;
             overflow-x: hidden;
-            perspective: 1000px; /* يعطي العمق ثلاثي الأبعاد للصفحة */
         }
 
-        /* تحويل العناصر لتكون ثلاثية الأبعاد */
-        .depth-layer {
-            transition: transform 0.1s ease-out;
-            transform-style: preserve-3d;
+        /* تأثير الخلفية الشبكي (3D Grid) لإعطاء عمق */
+        .bg-grid {
+            background-image: linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+            perspective: 1000px;
+            transform: rotateX(60deg);
+            position: absolute;
+            top: 0; left: 0; width: 200%; height: 200%;
+            z-index: 0;
+            opacity: 0.3;
         }
 
-        /* قائمة الهامبيرجر الجديدة */
-        .mobile-menu {
+        /* البوت النابض (الموضع: يمين أسفل) */
+        .bot-container {
             position: fixed;
-            top: 0;
-            right: 0;
-            bottom: 0;
-            left: 0;
-            background: rgba(0, 0, 0, 0.95);
-            backdrop-filter: blur(20px);
-            z-index: 100;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 2rem;
-            transform: translateX(100%);
-            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .mobile-menu.active { transform: translateX(0); }
-
-        /* البوت الصديق */
-        .bot-card {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            transform: translateZ(50px); /* يجعله يبرز للأمام */
+            bottom: 40px;
+            right: 40px;
+            z-index: 1000;
         }
 
-        .bot-trigger {
-            width: 90px;
-            height: 90px;
-            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-            border-radius: 24px;
+        .main-bot {
+            width: 85px;
+            height: 85px;
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            border-radius: 28px;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            box-shadow: 0 0 30px rgba(59, 130, 246, 0.4);
-            animation: float 3s ease-in-out infinite;
+            box-shadow: 0 0 40px rgba(37, 99, 235, 0.6);
+            position: relative;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0) rotate(0); }
-            50% { transform: translateY(-15px) rotate(5deg); }
+        .main-bot:hover {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 0 60px rgba(124, 58, 237, 0.8);
         }
 
-        .gradient-text {
-            background: linear-gradient(to left, #fff, #3b82f6);
+        /* هالة النبض الجاذبة للانتباه */
+        .pulse-ring {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 28px;
+            background: rgba(37, 99, 235, 0.4);
+            animation: pulse-animation 2s infinite;
+            z-index: -1;
+        }
+
+        @keyframes pulse-animation {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.6); opacity: 0; }
+        }
+
+        /* قائمة الهامبيرجر الجانبية */
+        .side-panel {
+            position: fixed;
+            top: 0; left: 0; bottom: 0;
+            width: 300px;
+            background: rgba(10, 10, 10, 0.98);
+            backdrop-filter: blur(20px);
+            z-index: 2000;
+            transform: translateX(-100%);
+            transition: transform 0.4s ease;
+            border-right: 1px solid rgba(255,255,255,0.1);
+        }
+        .side-panel.active { transform: translateX(0); }
+
+        .gradient-heading {
+            background: linear-gradient(135deg, #fff 0%, #3b82f6 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
     </style>
 </head>
-<body x-data="{ menuOpen: false }" @mousemove="moveElements($event)">
+<body x-data="{ menuOpen: false }">
 
-    <div class="mobile-menu" :class="menuOpen ? 'active' : ''">
-        <button @click="menuOpen = false" class="absolute top-8 left-8 text-white text-3xl">
-            <i class="fas fa-times"></i>
-        </button>
-        <a href="index.html" class="text-3xl font-bold hover:text-blue-500 transition">الرئيسية</a>
-        <a href="about.html" class="text-3xl font-bold hover:text-blue-500 transition">عن MoMA</a>
-        <a href="demo.html" class="text-3xl font-bold text-blue-500 underline">تجربة الديمو</a>
-        <a href="contact.html" class="text-3xl font-bold hover:text-blue-500 transition">تواصل معنا</a>
+    <div class="bg-grid"></div>
+
+    <div class="side-panel shadow-2xl" :class="menuOpen ? 'active' : ''">
+        <div class="p-8 space-y-8">
+            <button @click="menuOpen = false" class="text-2xl hover:text-blue-500 transition">
+                <i class="fas fa-arrow-right"></i>
+            </button>
+            <div class="flex flex-col gap-6 pt-10">
+                <a href="index.html" class="text-xl font-bold flex items-center gap-4 hover:text-blue-500 transition">
+                    <i class="fas fa-home w-8"></i> الرئيسية
+                </a>
+                <a href="demo.html" class="text-xl font-bold flex items-center gap-4 text-blue-500">
+                    <i class="fas fa-rocket w-8"></i> تجربة الديمو
+                </a>
+                <a href="contact.html" class="text-xl font-bold flex items-center gap-4 hover:text-blue-500 transition">
+                    <i class="fas fa-envelope w-8"></i> تواصل معنا
+                </a>
+            </div>
+        </div>
     </div>
 
-    <nav class="fixed top-0 w-full z-50 h-24 flex items-center px-8 bg-black/50 backdrop-blur-md border-b border-white/5">
+    <nav class="fixed top-0 w-full z-[1500] h-24 flex items-center px-10 bg-black/40 backdrop-blur-lg border-b border-white/5">
         <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
-            <a href="index.html" class="text-4xl font-black tracking-tighter">MoMA<span class="text-blue-500">AI</span></a>
-            
-            <div class="hidden md:flex gap-10 font-bold">
-                <a href="index.html" class="hover:text-blue-500 transition">الرئيسية</a>
-                <a href="demo.html" class="text-blue-500">الديمو</a>
-                <a href="contact.html" class="hover:text-blue-500 transition">تواصل</a>
-            </div>
-
-            <button @click="menuOpen = true" class="md:hidden text-2xl">
-                <i class="fas fa-bars-staggered"></i>
+            <button @click="menuOpen = true" class="p-3 bg-white/5 rounded-xl hover:bg-white/10 transition">
+                <i class="fas fa-bars-staggered text-xl"></i>
             </button>
+            <a href="index.html" class="text-3xl font-black tracking-tighter">MoMA<span class="text-blue-500">AI</span></a>
         </div>
     </nav>
 
-    <main class="depth-layer min-h-screen pt-40 flex items-center justify-center px-6">
-        <div class="max-w-6xl w-full grid lg:grid-cols-2 gap-20 items-center">
+    <main class="relative z-10 min-h-screen flex items-center px-6 md:px-20">
+        <div class="max-w-4xl space-y-8 text-right mr-auto">
+            <div class="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm font-bold">
+                <span class="relative flex h-3 w-3">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-3 w-3 bg-blue-500"></span>
+                </span>
+                نظام إغلاق الصفقات متصل الآن
+            </div>
             
-            <div class="space-y-8 text-right order-2 lg:order-1">
-                <h1 class="text-6xl md:text-8xl font-black leading-none gradient-text">
-                    رفيقك <br> الذكي
-                </h1>
-                <p class="text-gray-400 text-xl md:text-2xl leading-relaxed">
-                    هذا البوت ليس مجرد آلة، إنه "صديق العمل" الذي يساعدك في إدارة صفقاتك بكل سهولة واحترافية. اضغط عليه لتبدأ المحادثة.
-                </p>
-                <div class="flex gap-4 justify-end">
-                    <div class="px-6 py-3 rounded-2xl bg-white/5 border border-white/10 text-sm font-bold">
-                        <i class="fas fa-bolt text-yellow-500 ml-2"></i> استجابة فورية
+            <h1 class="text-6xl md:text-8xl font-black leading-tight gradient-heading">
+                حول زوارك <br> إلى عملاء.
+            </h1>
+            
+            <p class="text-gray-400 text-xl md:text-2xl leading-relaxed max-w-2xl">
+                بضغطة واحدة على <strong>أيقونة البوت في الأسفل</strong>، ستبدأ تجربة فريدة من نوعها. دع رفيقك الذكي يتولى مهمة الإقناع، الحجز، والبيع بينما تركز أنت على نمو أعمالك.
+            </p>
+
+            <div class="flex flex-wrap gap-4 justify-end pt-4">
+                <div class="p-4 rounded-2xl bg-white/5 border border-white/10 flex items-center gap-3 shadow-xl">
+                    <i class="fas fa-chart-line text-blue-500 text-2xl"></i>
+                    <div class="text-right">
+                        <div class="text-[10px] text-gray-500 uppercase tracking-widest">زيادة المبيعات</div>
+                        <div class="font-bold">+40% دقة</div>
                     </div>
-                    <div class="px-6 py-3 rounded-2xl bg-white/5 border border-white/10 text-sm font-bold">
-                        <i class="fas fa-shield-halved text-blue-500 ml-2"></i> نظام آمن
+                </div>
+                <div class="p-4 rounded-2xl bg-white/5 border border-white/10 flex items-center gap-3 shadow-xl">
+                    <i class="fas fa-clock text-emerald-500 text-2xl"></i>
+                    <div class="text-right">
+                        <div class="text-[10px] text-gray-500 uppercase tracking-widest">التوافر</div>
+                        <div class="font-bold">24/7 نشط</div>
                     </div>
                 </div>
             </div>
-
-            <div class="flex justify-center items-center order-1 lg:order-2">
-                <div class="bot-card relative w-80 h-80 rounded-[40px] flex flex-col items-center justify-center p-10 text-center gap-6 group cursor-pointer" onclick="alert('البوت جاهز لمساعدتك يا محمد!')">
-                    <div class="bot-trigger group-hover:scale-110 transition-transform duration-500">
-                        <i class="fas fa-robot text-4xl text-white"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-2xl font-black mb-2 uppercase tracking-widest">MoMA Sidekick</h3>
-                        <p class="text-xs text-blue-400 font-bold">اضغط لبدء الصداقة والعمل</p>
-                    </div>
-                    <div class="absolute -z-10 w-40 h-40 bg-blue-600/20 blur-[80px] rounded-full"></div>
-                </div>
-            </div>
-
         </div>
     </main>
 
-    <script>
-        // تأثير حركة الماوس ثلاثية الأبعاد
-        function moveElements(e) {
-            const layers = document.querySelectorAll('.depth-layer');
-            const x = (window.innerWidth / 2 - e.pageX) / 25;
-            const y = (window.innerHeight / 2 - e.pageY) / 25;
+    <div class="bot-container">
+        <div class="absolute -top-16 right-0 bg-blue-600 text-white px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap shadow-2xl animate-bounce">
+            ابدأ المحادثة الآن! 👇
+        </div>
+        
+        <div class="main-bot" onclick="handleBotClick()">
+            <div class="pulse-ring"></div>
+            <i class="fas fa-comment-dots text-4xl text-white"></i>
+        </div>
+    </div>
 
-            layers.forEach(layer => {
-                layer.style.transform = `rotateY(${x}deg) rotateX(${-y}deg)`;
-            });
+    <script>
+        function handleBotClick() {
+            // تأثير بصري عند الضغط
+            const bot = document.querySelector('.main-bot');
+            bot.style.transform = 'scale(0.8)';
+            setTimeout(() => {
+                bot.style.transform = 'scale(1.1)';
+                alert('أهلاً بك يا محمد! نظام "Agent G2" جاهز لبدء صفقاتك الآن.');
+            }, 150);
         }
 
-        // للهواتف: استخدام الحساسات للإمالة (اختياري)
-        window.addEventListener('deviceorientation', (e) => {
-            const layers = document.querySelectorAll('.depth-layer');
-            const x = e.gamma / 2; // tilt left/right
-            const y = e.beta / 2;  // tilt forward/back
-            
-            layers.forEach(layer => {
-                layer.style.transform = `rotateY(${x}deg) rotateX(${-y}deg)`;
-            });
+        // تحريك الشبكة الخلفية مع الماوس لتعزيز شعور الـ 3D
+        document.addEventListener('mousemove', (e) => {
+            const grid = document.querySelector('.bg-grid');
+            const moveX = (e.clientX - window.innerWidth / 2) * 0.05;
+            const moveY = (e.clientY - window.innerHeight / 2) * 0.05;
+            grid.style.transform = `rotateX(60deg) translateX(${moveX}px) translateY(${moveY}px)`;
         });
     </script>
 </body>
