@@ -3,206 +3,165 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تجربة النظام | العميل "جيمس" - MoMA AI</title>
+    <title>MoMA AI | تجربة البوت الذكي</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { font-family: 'Tajawal', sans-serif; background-color: #000; color: #fff; overflow-x: hidden; scroll-behavior: smooth; }
-        /* حاوية الـ 3D */
-        #canvas-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
-        /* تنسيقات الـ Navbar والمحتوى */
-        .nav-link { transition: color 0.3s; }
-        .nav-link:hover { color: #3b82f6; text-shadow: 0 0 10px rgba(59, 130, 246, 0.6); }
-        .glass-ui { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.05); z-index: 10; position: relative; }
-        /* البوت النابض في الزاوية */
-        .bot-trigger {
-            position: fixed; bottom: 30px; right: 30px; width: 80px; height: 80px;
-            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 0 40px rgba(59, 130, 246, 0.7); z-index: 100; cursor: pointer;
-            animation: pulse 2s infinite; transition: all 0.3s;
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: radial-gradient(circle at center, #111827 0%, #000 100%);
+            color: #fff;
+            overflow-x: hidden;
+            perspective: 1000px; /* يعطي العمق ثلاثي الأبعاد للصفحة */
         }
-        .bot-trigger:hover { transform: scale(1.1); box-shadow: 0 0 60px rgba(59, 130, 246, 0.9); }
-        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7); } 70% { box-shadow: 0 0 0 20px rgba(59, 130, 246, 0); } 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); } }
+
+        /* تحويل العناصر لتكون ثلاثية الأبعاد */
+        .depth-layer {
+            transition: transform 0.1s ease-out;
+            transform-style: preserve-3d;
+        }
+
+        /* قائمة الهامبيرجر الجديدة */
+        .mobile-menu {
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(20px);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+            transform: translateX(100%);
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .mobile-menu.active { transform: translateX(0); }
+
+        /* البوت الصديق */
+        .bot-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            transform: translateZ(50px); /* يجعله يبرز للأمام */
+        }
+
+        .bot-trigger {
+            width: 90px;
+            height: 90px;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 0 30px rgba(59, 130, 246, 0.4);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0); }
+            50% { transform: translateY(-15px) rotate(5deg); }
+        }
+
+        .gradient-text {
+            background: linear-gradient(to left, #fff, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
     </style>
 </head>
-<body x-data="{ open: false }">
+<body x-data="{ menuOpen: false }" @mousemove="moveElements($event)">
 
-    <div id="canvas-container"></div>
-
-    <div class="bot-trigger">
-        <i class="fas fa-comment-alt text-3xl text-white"></i>
+    <div class="mobile-menu" :class="menuOpen ? 'active' : ''">
+        <button @click="menuOpen = false" class="absolute top-8 left-8 text-white text-3xl">
+            <i class="fas fa-times"></i>
+        </button>
+        <a href="index.html" class="text-3xl font-bold hover:text-blue-500 transition">الرئيسية</a>
+        <a href="about.html" class="text-3xl font-bold hover:text-blue-500 transition">عن MoMA</a>
+        <a href="demo.html" class="text-3xl font-bold text-blue-500 underline">تجربة الديمو</a>
+        <a href="contact.html" class="text-3xl font-bold hover:text-blue-500 transition">تواصل معنا</a>
     </div>
 
-    <nav class="fixed top-0 w-full z-50 h-20 bg-black/80 backdrop-blur-lg border-b border-white/5 flex items-center">
-        <div class="max-w-7xl mx-auto px-6 w-full flex justify-between items-center relative">
-            <a href="index.html" class="text-3xl font-black tracking-tighter text-white z-20">MoMA <span class="text-blue-500">AI</span></a>
-            <div class="hidden md:flex space-x-reverse space-x-8 font-medium z-20">
-                <a href="index.html" class="nav-link text-gray-400">الرئيسية</a>
-                <a href="about.html" class="nav-link text-gray-400">من نحن</a>
-                <a href="demo.html" class="text-blue-500 font-bold underline">تجربة الديمو 🚀</a>
-                <a href="contact.html" class="nav-link text-gray-400">تواصل معنا</a>
+    <nav class="fixed top-0 w-full z-50 h-24 flex items-center px-8 bg-black/50 backdrop-blur-md border-b border-white/5">
+        <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
+            <a href="index.html" class="text-4xl font-black tracking-tighter">MoMA<span class="text-blue-500">AI</span></a>
+            
+            <div class="hidden md:flex gap-10 font-bold">
+                <a href="index.html" class="hover:text-blue-500 transition">الرئيسية</a>
+                <a href="demo.html" class="text-blue-500">الديمو</a>
+                <a href="contact.html" class="hover:text-blue-500 transition">تواصل</a>
             </div>
-            <button @click="open = !open" class="md:hidden text-white z-50 text-2xl relative">
-                <i class="fas" :class="open ? 'fa-times' : 'fa-bars'"></i>
+
+            <button @click="menuOpen = true" class="md:hidden text-2xl">
+                <i class="fas fa-bars-staggered"></i>
             </button>
-        </div>
-        <div x-show="open" 
-             x-transition:enter="transition ease-out duration-200"
-             x-transition:enter-start="opacity-0 -translate-y-4"
-             x-transition:enter-end="opacity-100 translate-y-0"
-             @click.away="open = false"
-             class="fixed top-20 left-0 w-full z-40 bg-black border-b border-white/5 p-8 flex flex-col gap-6 md:hidden">
-            <a href="index.html" class="text-lg">الرئيسية</a>
-            <a href="about.html" class="text-lg">من نحن</a>
-            <a href="demo.html" class="text-lg text-blue-500 underline">تجربة الديمو</a>
-            <a href="contact.html" class="text-lg">تواصل معنا</a>
         </div>
     </nav>
 
-    <main class="relative pt-40 pb-20 px-6 max-w-6xl mx-auto flex items-center justify-center min-h-[80vh]">
-        <div class="grid md:grid-cols-2 gap-10 items-center w-full z-10">
-            <div class="text-right space-y-6 md:pr-10">
-                <div class="inline-flex gap-2 items-center text-sm text-gray-500 uppercase tracking-widest font-bold">
-                    <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
-                    Agent "James" | V2.1
-                </div>
-                <h1 class="text-6xl font-black leading-tight">العميل السري <br><span class="text-blue-500">لإغلاق الصفقات</span></h1>
-                <p class="text-gray-400 text-xl max-w-lg">اتبع إشارة العميل "جيمس" في يسار الشاشة، فهو يوجهك لأذكى بوت مبيعات تم بناؤه خصيصاً لك ولتلبية احتياجات عملائك بدقة متناهية.</p>
-                <div class="glass-ui p-6 rounded-3xl inline-block">
-                    <p class="text-sm text-blue-400 font-bold mb-2 tracking-widest uppercase">Agent Status</p>
-                    <p class="text-2xl font-black">READY TO SELL</p>
+    <main class="depth-layer min-h-screen pt-40 flex items-center justify-center px-6">
+        <div class="max-w-6xl w-full grid lg:grid-cols-2 gap-20 items-center">
+            
+            <div class="space-y-8 text-right order-2 lg:order-1">
+                <h1 class="text-6xl md:text-8xl font-black leading-none gradient-text">
+                    رفيقك <br> الذكي
+                </h1>
+                <p class="text-gray-400 text-xl md:text-2xl leading-relaxed">
+                    هذا البوت ليس مجرد آلة، إنه "صديق العمل" الذي يساعدك في إدارة صفقاتك بكل سهولة واحترافية. اضغط عليه لتبدأ المحادثة.
+                </p>
+                <div class="flex gap-4 justify-end">
+                    <div class="px-6 py-3 rounded-2xl bg-white/5 border border-white/10 text-sm font-bold">
+                        <i class="fas fa-bolt text-yellow-500 ml-2"></i> استجابة فورية
+                    </div>
+                    <div class="px-6 py-3 rounded-2xl bg-white/5 border border-white/10 text-sm font-bold">
+                        <i class="fas fa-shield-halved text-blue-500 ml-2"></i> نظام آمن
+                    </div>
                 </div>
             </div>
-            <div class="hidden md:block"></div>
+
+            <div class="flex justify-center items-center order-1 lg:order-2">
+                <div class="bot-card relative w-80 h-80 rounded-[40px] flex flex-col items-center justify-center p-10 text-center gap-6 group cursor-pointer" onclick="alert('البوت جاهز لمساعدتك يا محمد!')">
+                    <div class="bot-trigger group-hover:scale-110 transition-transform duration-500">
+                        <i class="fas fa-robot text-4xl text-white"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-black mb-2 uppercase tracking-widest">MoMA Sidekick</h3>
+                        <p class="text-xs text-blue-400 font-bold">اضغط لبدء الصداقة والعمل</p>
+                    </div>
+                    <div class="absolute -z-10 w-40 h-40 bg-blue-600/20 blur-[80px] rounded-full"></div>
+                </div>
+            </div>
+
         </div>
     </main>
 
-    <footer class="fixed bottom-0 w-full py-6 px-8 text-gray-600 text-[10px] flex justify-between items-center z-50 border-t border-white/5 bg-black">
-        <div>© 2026 MoMA AI | BUSINESS LABS</div>
-        <div>
-            <span class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></span> AGENT G2 ACTIVE</span>
-        </div>
-    </footer>
-
     <script>
-        // --- إعداد المشهد 3D (نمط Vector / Silhouette) ---
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setPixelRatio(window.devicePixelRatio);
-        document.getElementById('canvas-container').appendChild(renderer.domElement);
+        // تأثير حركة الماوس ثلاثية الأبعاد
+        function moveElements(e) {
+            const layers = document.querySelectorAll('.depth-layer');
+            const x = (window.innerWidth / 2 - e.pageX) / 25;
+            const y = (window.innerHeight / 2 - e.pageY) / 25;
 
-        // الإضاءة (خفيفة لإبراز الحواف)
-        const light = new THREE.AmbientLight(0x0a0a0a); // إضاءة محيطية خافتة جداً
-        scene.add(light);
-        const pLight = new THREE.PointLight(0x3b82f6, 1);
-        pLight.position.set(5, 5, 5);
-        scene.add(pLight);
-
-        // --- بناء الشخصية (الشبح الأسود الهولوغرافي) ---
-        const agent = new THREE.Group();
-
-        // مواد نمط Vector (Silhouette)
-        const matteBlackMat = new THREE.MeshPhongMaterial({ 
-            color: 0x000000, 
-            flatShading: true, 
-            shininess: 0 
-        });
-        
-        // مادة التوهج (لحواف الشخصية)
-        const glowMat = new THREE.MeshBasicMaterial({ 
-            color: 0x3b82f6, 
-            wireframe: true, 
-            transparent: true, 
-            opacity: 0.1 
-        });
-
-        // 1. الجسم (الحلة)
-        const bodyGeo = new THREE.CylinderGeometry(0.5, 0.3, 2, 8);
-        const body = new THREE.Mesh(bodyGeo, matteBlackMat);
-        const bodyGlow = new THREE.Mesh(bodyGeo, glowMat);
-        body.add(bodyGlow);
-        agent.add(body);
-
-        // 2. الرأس
-        const headGeo = new THREE.SphereGeometry(0.4, 8, 8);
-        const head = new THREE.Mesh(headGeo, matteBlackMat);
-        const headGlow = new THREE.Mesh(headGeo, glowMat);
-        head.add(headGlow);
-        head.position.y = 1.4;
-        agent.add(head);
-
-        // 3. اليد المشيرة (أهم جزء للتوجيه)
-        const armGeo = new THREE.CylinderGeometry(0.08, 0.08, 1.2, 8);
-        const arm = new THREE.Mesh(armGeo, matteBlackMat);
-        const armGlow = new THREE.Mesh(armGeo, glowMat);
-        arm.add(armGlow);
-        arm.position.set(0.6, 0.8, 0.4);
-        arm.rotation.z = -Math.PI / 3; // وضعية الإشارة لليمين
-        arm.rotation.x = Math.PI / 4;
-        agent.add(arm);
-
-        // 4. السباب المشير (الإصبع)
-        const fingerGeo = new THREE.CylinderGeometry(0.02, 0.02, 0.3, 8);
-        const finger = new THREE.Mesh(fingerGeo, matteBlackMat);
-        const fingerGlow = new THREE.Mesh(fingerGeo, glowMat);
-        finger.add(fingerGlow);
-        finger.position.set(1.1, 1.2, 0.8);
-        finger.rotation.z = -Math.PI / 3;
-        agent.add(finger);
-
-        scene.add(agent);
-        camera.position.z = 5;
-
-        // --- التفاعل مع الماوس وموقع الموبايل ---
-        let mouseX = 0, mouseY = 0;
-        window.addEventListener('mousemove', (e) => {
-            mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
-            mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
-        });
-
-        function animate() {
-            requestAnimationFrame(animate);
-            
-            // --- ضبط التموضع للموبايل والكمبيوتر ---
-            const isMobile = window.innerWidth < 768;
-            
-            if (isMobile) {
-                // تموضع مثالي في يسار شاشة الموبايل (كما في الصورة)
-                agent.position.x = -1.4; 
-                agent.position.y = -0.5;
-                agent.scale.set(0.9, 0.9, 0.9);
-            } else {
-                // تموضع في الكمبيوتر
-                agent.position.x = -2.5; 
-                agent.position.y = 0;
-                agent.scale.set(1.2, 1.2, 1.2);
-            }
-
-            // --- حركة طفو Vector هادئة ---
-            agent.position.y += Math.sin(Date.now() * 0.001) * 0.1;
-
-            // --- تفاعل الرأس مع مؤشر الماوس ---
-            head.rotation.y = mouseX * 0.3;
-            head.rotation.x = mouseY * 0.2;
-
-            // دوران طفيف للجسم بأكمله لتعزيز الـ Silhouette
-            agent.rotation.y = mouseX * 0.05 + Date.now() * 0.0001;
-
-            renderer.render(scene, camera);
+            layers.forEach(layer => {
+                layer.style.transform = `rotateY(${x}deg) rotateX(${-y}deg)`;
+            });
         }
-        animate();
 
-        // تحديث الحجم والتموضع عند تغيير نافذة المتصفح
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
+        // للهواتف: استخدام الحساسات للإمالة (اختياري)
+        window.addEventListener('deviceorientation', (e) => {
+            const layers = document.querySelectorAll('.depth-layer');
+            const x = e.gamma / 2; // tilt left/right
+            const y = e.beta / 2;  // tilt forward/back
+            
+            layers.forEach(layer => {
+                layer.style.transform = `rotateY(${x}deg) rotateX(${-y}deg)`;
+            });
         });
     </script>
 </body>
