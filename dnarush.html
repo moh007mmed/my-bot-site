@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>DNA RUSH | اندفاع الچينوم</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;800;900&family=Tajawal:wght@400;500;700&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#070b16; --panel:#101a30; --panel-2:#16223d; --line:#283456;
+    --text:#eef2fc; --muted:#8493b8;
+    --a:#4c8dff; --t:#fb7185; --g:#2dd4bf; --c:#fbbf24;
+    --danger:#ff4d6d; --gold:#ffd84d;
+  }
+  *{box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; user-select:none; touch-action:manipulation;}
+  html,body{height:100%; overscroll-behavior:none;}
+  body{
+    background:
+      radial-gradient(1000px 560px at 15% -10%, #182a52 0%, transparent 60%),
+      radial-gradient(800px 460px at 110% 8%, #201138 0%, transparent 55%),
+      var(--ink);
+    color:var(--text); font-family:'Tajawal',sans-serif; overflow:hidden; height:100vh;
+  }
+  .font-display{font-family:'Cairo',sans-serif;}
+  .mono{font-family:'JetBrains Mono',monospace; direction:ltr; display:inline-block;}
+
+  .app{ position:relative; height:100vh; display:flex; flex-direction:column; }
+  .screen{ display:none; flex:1; flex-direction:column; min-height:0; }
+  .screen.active{ display:flex; }
+
+  .topbar{ display:flex; align-items:center; justify-content:space-between; padding:10px 14px; border-bottom:1px solid var(--line); flex-shrink:0;}
+  .brand{ display:flex; align-items:center; gap:8px; }
+  .brand span.ic{ font-size:20px; }
+  .brand h1{ font-size:15px; }
+  .icon-btn{ background:var(--panel-2); border:1px solid var(--line); color:var(--text); width:34px; height:34px; border-radius:10px; font-size:15px; cursor:pointer;}
+  .icon-btn:focus-visible, button:focus-visible{ outline:2px solid var(--g); outline-offset:2px;}
+
+  /* ===== START ===== */
+  #start{ align-items:center; justify-content:center; gap:16px; padding:18px; overflow-y:auto; }
+  .hero{ text-align:center; max-width:440px; }
+  .hero .eyebrow{ color:var(--gold); font-size:11px; letter-spacing:3px; font-weight:800; font-family:'JetBrains Mono'; direction:ltr;}
+  .hero h2{ font-size:27px; margin:8px 0 6px; line-height:1.3; }
+  .hero p{ color:var(--muted); font-size:13.5px; line-height:1.65; }
+
+  .diffs{ display:flex; flex-direction:column; gap:10px; width:100%; max-width:380px; }
+  .diff-btn{
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+    background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:14px 16px;
+    cursor:pointer; text-align:right; transition:.15s;
+  }
+  .diff-btn:active{ transform:scale(.97); }
+  .diff-btn .dname{ font-family:'Cairo',sans-serif; font-weight:800; font-size:15px; }
+  .diff-btn .ddesc{ color:var(--muted); font-size:11.5px; margin-top:2px; }
+  .diff-btn .dbest{ font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--gold); white-space:nowrap; }
+  .diff-btn.intern{ border-color:var(--g); }
+  .diff-btn.resident{ border-color:var(--a); }
+  .diff-btn.consultant{ border-color:var(--t); }
+
+  .legend{ display:flex; gap:14px; margin-top:4px; }
+  .legend .lg{ display:flex; align-items:center; gap:5px; font-size:11px; color:var(--muted); }
+  .legend .dot{ width:10px; height:10px; border-radius:50%; box-shadow:0 0 6px currentColor;}
+
+  /* ===== GAME ===== */
+  #game{ position:relative; }
+  .hud{ display:flex; align-items:center; gap:10px; padding:8px 12px; flex-shrink:0; border-bottom:1px solid var(--line); }
+  .hud-item{ background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:6px 10px; font-family:'JetBrains Mono',monospace; font-weight:700; font-size:13px; display:flex; align-items:center; gap:5px; }
+  .hud-grow{ flex:1; display:flex; justify-content:center; }
+  #livesWrap{ display:flex; gap:3px; font-size:16px; }
+  .level-badge{
+    text-align:center; font-family:'Cairo',sans-serif; font-weight:700; font-size:11.5px;
+    color:var(--muted); padding:4px 0; flex-shrink:0; letter-spacing:.5px;
+  }
+
+  .playfield{
+    position:relative; flex:1; overflow:hidden; margin:0 8px;
+    background:linear-gradient(180deg, rgba(255,255,255,.02), transparent 30%);
+    border-left:1px dashed var(--line); border-right:1px dashed var(--line);
+  }
+  .playfield.shake{ animation:shake .35s; }
+  @keyframes shake{ 10%,90%{transform:translateX(-2px);} 20%,80%{transform:translateX(4px);} 30%,50%,70%{transform:translateX(-7px);} 40%,60%{transform:translateX(7px);} }
+
+  .danger-line{ position:absolute; left:0; right:0; top:82%; height:0; border-top:2px dashed var(--danger); opacity:.55; }
+  .danger-line::after{ content:'⚠ خط الخطر'; position:absolute; left:6px; top:-18px; font-size:9px; color:var(--danger); font-family:'JetBrains Mono'; }
+
+  .cap{
+    position:absolute; transform:translate(-50%,0); width:58px; height:58px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center; font-family:'Cairo',sans-serif; font-weight:900; font-size:22px;
+    color:#06121f; cursor:pointer; will-change:top; transition:filter .1s;
+  }
+  .cap.base-A{ background:radial-gradient(circle at 35% 30%, #8ab4ff, var(--a)); box-shadow:0 0 18px -2px var(--a); }
+  .cap.base-T{ background:radial-gradient(circle at 35% 30%, #ffb3bd, var(--t)); box-shadow:0 0 18px -2px var(--t); }
+  .cap.base-G{ background:radial-gradient(circle at 35% 30%, #8af0e3, var(--g)); box-shadow:0 0 18px -2px var(--g); }
+  .cap.base-C{ background:radial-gradient(circle at 35% 30%, #ffe49a, var(--c)); box-shadow:0 0 18px -2px var(--c); }
+  .cap.quiz{ background:radial-gradient(circle at 35% 30%, #fff3b0, var(--gold)); box-shadow:0 0 22px -2px var(--gold); animation:quizpulse 1s infinite; font-size:26px;}
+  .cap.power{ background:radial-gradient(circle at 35% 30%, #c9faff, #58e1ff); box-shadow:0 0 22px -2px #58e1ff; animation:quizpulse .8s infinite; }
+  @keyframes quizpulse{ 0%,100%{transform:translate(-50%,0) scale(1);} 50%{transform:translate(-50%,0) scale(1.08);} }
+  .cap.popgone{ animation:popgone .25s forwards; pointer-events:none; }
+  @keyframes popgone{ to{ transform:translate(-50%,0) scale(1.6); opacity:0; } }
+  .cap.missgone{ animation:missgone .3s forwards; pointer-events:none; }
+  @keyframes missgone{ to{ opacity:0; filter:grayscale(1); transform:translate(-50%,8px) scale(.7);} }
+
+  .floattext{
+    position:absolute; font-family:'JetBrains Mono',monospace; font-weight:800; font-size:15px;
+    pointer-events:none; animation:floatup .7s ease forwards; transform:translate(-50%,0);
+  }
+  @keyframes floatup{ from{ opacity:1; transform:translate(-50%,0);} to{ opacity:0; transform:translate(-50%,-38px);} }
+
+  .level-flash{
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    background:rgba(7,11,22,.55); z-index:5; pointer-events:none; opacity:0;
+  }
+  .level-flash.show{ animation:flashin 1.4s ease forwards; }
+  @keyframes flashin{ 0%{opacity:0;} 15%{opacity:1;} 80%{opacity:1;} 100%{opacity:0;} }
+  .level-flash .lf-text{ font-family:'Cairo',sans-serif; font-weight:900; font-size:24px; color:var(--gold); text-shadow:0 0 18px rgba(255,216,77,.7); text-align:center; padding:0 20px;}
+
+  .answer-row{ display:flex; gap:8px; padding:10px 10px calc(10px + env(safe-area-inset-bottom)); flex-shrink:0; }
+  .ans-btn{
+    flex:1; border:none; border-radius:16px; padding:16px 0; font-family:'Cairo',sans-serif; font-weight:900; font-size:20px;
+    color:#06121f; cursor:pointer; position:relative; transition:.1s;
+  }
+  .ans-btn:active{ transform:scale(.93); filter:brightness(.9); }
+  .ans-btn.A{ background:linear-gradient(135deg,#8ab4ff,var(--a)); }
+  .ans-btn.T{ background:linear-gradient(135deg,#ffb3bd,var(--t)); }
+  .ans-btn.G{ background:linear-gradient(135deg,#8af0e3,var(--g)); }
+  .ans-btn.C{ background:linear-gradient(135deg,#ffe49a,var(--c)); }
+  .ans-btn .pair{ display:block; font-family:'JetBrains Mono'; font-size:9px; font-weight:700; opacity:.7; margin-top:1px;}
+  .ans-btn.wrongflash{ animation:wrongflash .25s; }
+  @keyframes wrongflash{ 50%{ filter:brightness(.6) saturate(.4);} }
+
+  /* ===== OVERLAYS ===== */
+  .overlay{ position:fixed; inset:0; background:rgba(4,6,12,.82); backdrop-filter:blur(3px); z-index:50; display:none; align-items:center; justify-content:center; padding:18px;}
+  .overlay.active{ display:flex; }
+  .quiz-card{
+    width:100%; max-width:440px; background:var(--panel); border:1px solid var(--gold); border-radius:20px;
+    padding:20px; box-shadow:0 0 40px -10px rgba(255,216,77,.4); animation:popin .25s ease;
+  }
+  @keyframes popin{ from{ transform:scale(.85); opacity:0;} to{ transform:scale(1); opacity:1;} }
+  .quiz-top{ display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+  .quiz-tag{ font-family:'Cairo',sans-serif; font-weight:800; font-size:12px; color:var(--gold); }
+  .timer-ring{ width:34px; height:34px; border-radius:50%; border:3px solid var(--line); border-top-color:var(--gold); position:relative; }
+  .timer-num{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono'; font-size:12px; font-weight:700; }
+  .quiz-q{ font-family:'Cairo',sans-serif; font-size:16.5px; font-weight:700; line-height:1.6; margin-bottom:14px; }
+  .qopt{
+    width:100%; text-align:right; background:var(--panel-2); border:1px solid var(--line); color:var(--text);
+    padding:12px 13px; border-radius:12px; margin-bottom:8px; font-size:14px; cursor:pointer; font-family:'Tajawal';
+    display:flex; gap:8px; align-items:center;
+  }
+  .qopt .b{ width:20px; height:20px; border-radius:50%; border:1.5px solid var(--line); display:flex; align-items:center; justify-content:center; font-size:10px; font-family:'JetBrains Mono'; flex-shrink:0;}
+  .qopt.correct{ border-color:var(--g); background:rgba(45,212,191,.15); }
+  .qopt.wrong{ border-color:var(--t); background:rgba(251,113,133,.15); }
+  .qopt[disabled]{ pointer-events:none; }
+
+  .pause-card{ text-align:center; }
+  .pause-card h3{ font-family:'Cairo'; font-size:22px; margin-bottom:16px; }
+  .pause-row{ display:flex; gap:10px; }
+  .pbtn{ flex:1; padding:14px; border:none; border-radius:14px; font-family:'Cairo'; font-weight:800; font-size:14.5px; cursor:pointer;}
+  .pbtn.resume{ background:linear-gradient(135deg,var(--g),var(--a)); color:#06121f; }
+  .pbtn.quit{ background:var(--panel-2); border:1px solid var(--line); color:var(--text); }
+
+  /* ===== END ===== */
+  #end{ align-items:center; justify-content:center; text-align:center; gap:10px; padding:18px; }
+  #end .res-ic{ font-size:46px; }
+  #end h2{ font-size:22px; }
+  .score-big{ font-family:'JetBrains Mono',monospace; font-size:42px; font-weight:800; color:var(--gold); text-shadow:0 0 24px rgba(255,216,77,.4); }
+  .stats-row{ display:flex; gap:10px; }
+  .stat{ background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:10px 16px; min-width:90px;}
+  .stat .v{ font-family:'JetBrains Mono'; font-weight:700; font-size:17px; }
+  .stat .l{ font-size:10.5px; color:var(--muted); margin-top:2px; }
+  .record-badge{
+    background:linear-gradient(135deg,#3a2c00,#1a1200); border:1px solid var(--gold); color:var(--gold);
+    padding:8px 16px; border-radius:20px; font-family:'Cairo'; font-weight:800; font-size:13px; animation:pulse 1s infinite;
+  }
+  @keyframes pulse{ 50%{ box-shadow:0 0 0 6px rgba(255,216,77,.15);} }
+  .end-btns{ display:flex; gap:10px; margin-top:6px; }
+  .replay-btn{ padding:14px 22px; border:none; border-radius:14px; cursor:pointer; background:linear-gradient(135deg,var(--g),var(--a)); color:#06121f; font-family:'Cairo'; font-weight:800; font-size:14.5px;}
+  .menu-btn{ padding:14px 22px; border:1px solid var(--line); border-radius:14px; cursor:pointer; background:var(--panel-2); color:var(--text); font-family:'Cairo'; font-weight:800; font-size:14.5px;}
+
+  @media(max-width:360px){
+    .cap{ width:50px; height:50px; font-size:18px;}
+    .ans-btn{ font-size:17px; padding:13px 0;}
+    .hero h2{ font-size:23px;}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="topbar">
+    <div class="brand"><span class="ic">🧬</span><h1 class="font-display">DNA RUSH</h1></div>
+    <button class="icon-btn" id="howtoBtn">؟</button>
+  </div>
+
+  <!-- ===== START ===== -->
+  <div class="screen active" id="start">
+    <div class="hero">
+      <span class="eyebrow">SOLO ARCADE MODE</span>
+      <h2 class="font-display">جاهز تحس أدرينالين التضاعف الخلوي؟ ⚡</h2>
+      <p>قواعد نيتروجينية تتساقط بسرعة جنونية… اضغط القاعدة المكمّلة الصحيحة قبل ما توصل خط الخطر. راقب الكبسولات الذهبية لأسئلة بونص ضخمة!</p>
+    </div>
+    <div class="diffs" id="diffs">
+      <button class="diff-btn intern" data-d="intern">
+        <span><span class="dname font-display">🌱 متدرب</span><span class="ddesc">سرعة هادئة · 4 علامات حيوية</span></span>
+        <span class="dbest" id="best-intern">أفضل: —</span>
+      </button>
+      <button class="diff-btn resident" data-d="resident">
+        <span><span class="dname font-display">🩺 مقيم</span><span class="ddesc">سرعة متوسطة · 3 علامات حيوية</span></span>
+        <span class="dbest" id="best-resident">أفضل: —</span>
+      </button>
+      <button class="diff-btn consultant" data-d="consultant">
+        <span><span class="dname font-display">🔥 استشاري</span><span class="ddesc">سرعة جنونية · علامتان فقط</span></span>
+        <span class="dbest" id="best-consultant">أفضل: —</span>
+      </button>
+    </div>
+    <div class="legend">
+      <span class="lg"><span class="dot" style="background:var(--a); color:var(--a)"></span>A↔T</span>
+      <span class="lg"><span class="dot" style="background:var(--g); color:var(--g)"></span>G↔C</span>
+      <span class="lg"><span class="dot" style="background:var(--gold); color:var(--gold)"></span>سؤال بونص</span>
+      <span class="lg"><span class="dot" style="background:#58e1ff; color:#58e1ff"></span>طاقة ATP</span>
+    </div>
+  </div>
+
+  <!-- ===== GAME ===== -->
+  <div class="screen" id="game">
+    <div class="hud">
+      <div class="hud-item">⭐ <span id="scoreVal">0</span></div>
+      <div class="hud-grow"><div class="hud-item">🔥 <span id="comboVal">x1</span></div></div>
+      <div class="hud-item" id="livesWrap"></div>
+      <button class="icon-btn" id="pauseBtn">⏸</button>
+    </div>
+    <div class="level-badge" id="levelBadge">المستوى 1 · الطور G1</div>
+    <div class="playfield" id="playfield">
+      <div class="danger-line"></div>
+      <div class="level-flash" id="levelFlash"><div class="lf-text" id="levelFlashText"></div></div>
+    </div>
+    <div class="answer-row">
+      <button class="ans-btn A" data-base="A">A<span class="pair mono">↔T</span></button>
+      <button class="ans-btn T" data-base="T">T<span class="pair mono">↔A</span></button>
+      <button class="ans-btn G" data-base="G">G<span class="pair mono">↔C</span></button>
+      <button class="ans-btn C" data-base="C">C<span class="pair mono">↔G</span></button>
+    </div>
+  </div>
+
+  <!-- ===== END ===== -->
+  <div class="screen" id="end">
+    <div class="res-ic" id="endIcon">🧬</div>
+    <h2 class="font-display" id="endTitle">انتهت الجولة!</h2>
+    <div class="score-big mono" id="finalScore">0</div>
+    <div class="stats-row">
+      <div class="stat"><div class="v mono" id="finalCombo">x1</div><div class="l">أعلى سلسلة</div></div>
+      <div class="stat"><div class="v mono" id="finalLevel">1</div><div class="l">المستوى</div></div>
+    </div>
+    <div id="recordBadge" style="display:none;" class="record-badge">🏆 رقم قياسي جديد!</div>
+    <div class="end-btns">
+      <button class="replay-btn font-display" id="replayBtn">🔁 إعادة المحاولة</button>
+      <button class="menu-btn font-display" id="menuBtn">🏠 القائمة</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- quiz overlay -->
+<div class="overlay" id="quizOverlay">
+  <div class="quiz-card">
+    <div class="quiz-top">
+      <span class="quiz-tag">⚡ سؤال بونص!</span>
+      <div class="timer-ring"><span class="timer-num mono" id="quizTimerNum">8</span></div>
+    </div>
+    <p class="quiz-q font-display" id="quizQ"></p>
+    <div id="quizOpts"></div>
+  </div>
+</div>
+
+<!-- pause overlay -->
+<div class="overlay" id="pauseOverlay">
+  <div class="quiz-card pause-card">
+    <h3 class="font-display">⏸ إيقاف مؤقت</h3>
+    <div class="pause-row">
+      <button class="pbtn resume font-display" id="resumeBtn">▶️ استمرار</button>
+      <button class="pbtn quit font-display" id="quitBtn">⏹ إنهاء</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+"use strict";
+
+/* ---------------- QUESTION BANK ---------------- */
+const QUESTIONS = [
+  {q:"ما المكونات الثلاثة الأساسية لوحدة النيوكليوتيد الواحدة؟", opts:["قاعدة نيتروجينية + سكر خماسي + مجموعة فوسفات","قاعدة نيتروجينية + سكر سداسي + بروتين","حمض أميني + دهون + سكر","سكر + بروتين + فوسفات فقط"], c:0},
+  {q:"ما الفرق الجوهري بين الريبوز والديوكسيريبوز؟", opts:["غياب أكسجين عند الكربون 2' في الديوكسيريبوز","غياب أكسجين عند الكربون 5'","الديوكسيريبوز يحتوي فوسفات إضافي","لا يوجد فرق بينهما"], c:0},
+  {q:"أي مما يلي بيورينات (Purines) ثنائية الحلقة؟", opts:["الأدينين والجوانين","السيتوزين والثايمين","اليوراسيل والسيتوزين","الثايمين فقط"], c:0},
+  {q:"عند تكوّن نيوكليوزيد من بيورين، أين ترتبط القاعدة بالسكر؟", opts:["عند موضع N9","عند موضع N1","عند الكربون C5'","عند الكربون C3'"], c:0},
+  {q:"أي جزيء يُصنَّف كـ«رسول ثانوي» داخل الخلية؟", opts:["cAMP","ATP","NAD+","FAD"], c:0},
+  {q:"كم رابطة هيدروجينية تربط الأدينين بالثايمين؟", opts:["رابطتان (2)","ثلاث روابط (3)","رابطة واحدة (1)","أربع روابط (4)"], c:0},
+  {q:"ما اسم البروتينات الموجبة الشحنة التي يلتف حولها DNA؟", opts:["الهستونات (Histones)","الغلوبيولينات","الكولاجين","الإنزيمات المساعدة"], c:0},
+  {q:"ما الترتيب الصحيح للعقيدة المركزية؟", opts:["DNA ← نسخ ← RNA ← ترجمة ← بروتين","RNA ← DNA ← بروتين","بروتين ← RNA ← DNA","DNA ← ترجمة ← RNA ← نسخ"], c:0},
+  {q:"لماذا تُوصف خيوط DNA بأنها Antiparallel؟", opts:["أحد الخيطين 5'→3' والآخر 3'→5'","كلاهما 5'→3'","الخيطان منفصلان كلياً","لا اتجاه محدد لـ DNA"], c:0},
+  {q:"ما الذي يفسر تفاوت طول جزيئات RNA؟", opts:["يتحدد حسب حجم الرسالة الجينية المطلوبة","طوله ثابت كـ DNA","RNA أطول من DNA دائماً","لا علاقة لطوله بالبروتين"], c:0},
+  {q:"ما الناتج النهائي لتكسير حلقة البيورين في الجسم؟", opts:["حمض اليوريك (Uric Acid)","ثاني أكسيد الكربون فقط","الأمونيا فقط","الجلوكوز"], c:0},
+  {q:"كم تقريباً نسبة إفراز حمض اليوريك عبر الكلى؟", opts:["حوالي 75%","حوالي 25%","حوالي 50%","100%"], c:0},
+  {q:"ما الإنزيم محدد معدل تخليق البيورينات (Rate Limiting)؟", opts:["PRPP Synthetase","DNase","RNase","Phosphorylase"], c:0},
+  {q:"ما الأحماض الأمينية الثلاثة في تخليق البيورين من الصفر؟", opts:["الجليسين، الجلوتامين، الأسبارتات","الليسين، التربتوفان، الفالين","الألانين والسيرين فقط","الهيستيدين، البرولين، التيروزين"], c:0},
+  {q:"مساريّ إعادة الفسفرة وفسفرة النيوكليوزيدات يُعرفان معاً باسم:", opts:["مسارات الإنقاذ (Salvage)","البناء من الصفر (De Novo)","دورة كريبس","التحلل السكري"], c:0},
+  {q:"ماذا يعني اختصار DNA؟", opts:["Deoxyribonucleic Acid","Dynamic Nuclear Acid","Double Nucleotide Acid","Di-Ribonucleic Acid"], c:0},
+  {q:"أي قاعدة نيتروجينية توجد في RNA فقط؟", opts:["اليوراسيل (Uracil)","الثايمين","الأدينين","الجوانين"], c:0},
+  {q:"ما السكر الخماسي المكوّن لـ DNA؟", opts:["الديوكسيريبوز","الريبوز","الجلوكوز","الفركتوز"], c:0},
+  {q:"فرط إنتاج حمض اليوريك يرتبط سريرياً بأي مرض؟", opts:["النقرس (Gout)","داء السكري","فقر الدم","الربو"], c:0},
+  {q:"أي جزيء نقطة التقاء بين البيورينات والبيريميدينات و NAD/NADP؟", opts:["PRPP","ATP","THF","Ribose-5-Phosphate"], c:0},
+];
+
+const COMPLEMENT = {A:'T', T:'A', G:'C', C:'G'};
+const BASE_COLOR = {A:'#4c8dff', T:'#fb7185', G:'#2dd4bf', C:'#fbbf24'};
+
+const DIFFS = {
+  intern:     { label:'متدرب',  fallStart:3600, fallFloor:1500, spawnStart:1500, spawnFloor:680, lives:4 },
+  resident:   { label:'مقيم',   fallStart:2900, fallFloor:1200, spawnStart:1250, spawnFloor:540, lives:3 },
+  consultant: { label:'استشاري', fallStart:2300, fallFloor:980,  spawnStart:1000, spawnFloor:430, lives:2 },
+};
+
+const LEVELS = [
+  {min:0,    name:'الطور G1'},
+  {min:250,  name:'الطور S — تضاعف DNA'},
+  {min:650,  name:'الطور G2'},
+  {min:1200, name:'الطور M — انقسام!'},
+  {min:2000, name:'دورة خلوية متسارعة'},
+  {min:3200, name:'فرط نشاط إنزيمي ⚡'},
+  {min:5000, name:'استشاري خارق 🔥'},
+];
+function getLevel(score){
+  let lvl=1, name=LEVELS[0].name;
+  for(let i=0;i<LEVELS.length;i++){ if(score>=LEVELS[i].min){ lvl=i+1; name=LEVELS[i].name; } }
+  return {lvl, name};
+}
+
+/* ---------------- AUDIO ---------------- */
+let actx;
+function beep(freq,dur,type){
+  try{
+    actx = actx || new (window.AudioContext||window.webkitAudioContext)();
+    const o=actx.createOscillator(), g=actx.createGain();
+    o.type=type||'sine'; o.frequency.value=freq;
+    o.connect(g); g.connect(actx.destination);
+    g.gain.setValueAtTime(.07, actx.currentTime);
+    g.gain.exponentialRampToValueAtTime(.001, actx.currentTime+dur);
+    o.start(); o.stop(actx.currentTime+dur);
+  }catch(e){}
+}
+const sCatch = (p)=>beep(500+p*300,.09,'triangle');
+const sMiss = ()=>beep(140,.28,'sawtooth');
+const sWrongTap = ()=>beep(220,.08,'square');
+const sQuizOpen = ()=>{beep(700,.08); setTimeout(()=>beep(900,.08),80);};
+const sQuizOk = ()=>{[523,659,784,1046].forEach((f,i)=>setTimeout(()=>beep(f,.15),i*90));};
+const sQuizNo = ()=>{beep(180,.35,'sawtooth');};
+const sPower = ()=>{beep(880,.1); setTimeout(()=>beep(1200,.12),70);};
+const sLevel = ()=>{[440,554,659,880].forEach((f,i)=>setTimeout(()=>beep(f,.16),i*70));};
+const sGameOver = ()=>{[392,330,261,196].forEach((f,i)=>setTimeout(()=>beep(f,.3,'sawtooth'),i*180));};
+
+/* ---------------- STORAGE (best score) ---------------- */
+async function getBest(diffKey){
+  try{
+    if(!window.storage) return 0;
+    const r = await window.storage.get('dnarush-best-'+diffKey);
+    return r ? parseInt(r.value,10)||0 : 0;
+  }catch(e){ return 0; }
+}
+async function setBest(diffKey,val){
+  try{ if(window.storage) await window.storage.set('dnarush-best-'+diffKey, String(val)); }catch(e){}
+}
+
+async function refreshBestLabels(){
+  for(const k of Object.keys(DIFFS)){
+    const v = await getBest(k);
+    document.getElementById('best-'+k).textContent = 'أفضل: ' + (v>0 ? v : '—');
+  }
+}
+refreshBestLabels();
+
+/* ---------------- STATE ---------------- */
+let diffKey=null, diff=null;
+let state='start'; // start | playing | paused | quiz | gameover
+let score=0, combo=0, comboMax=0, lives=0, curLevel=1, speedMultiplier=1, slowUntil=0;
+let spawnTimer=0, lastFrame=0;
+let capsules=[]; let capId=0;
+let quizActiveCapsule=null;
+let pool=[]; // shuffled question indices
+let rafId=null;
+
+const playfield = document.getElementById('playfield');
+const scoreVal = document.getElementById('scoreVal');
+const comboVal = document.getElementById('comboVal');
+const livesWrap = document.getElementById('livesWrap');
+const levelBadge = document.getElementById('levelBadge');
+const levelFlash = document.getElementById('levelFlash');
+const levelFlashText = document.getElementById('levelFlashText');
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+/* ---------------- START SCREEN ---------------- */
+document.getElementById('diffs').addEventListener('click', e=>{
+  const btn = e.target.closest('.diff-btn'); if(!btn) return;
+  diffKey = btn.dataset.d; diff = DIFFS[diffKey];
+  startGame();
+});
+
+function freshQuestionPool(){
+  pool = QUESTIONS.map((_,i)=>i);
+  for(let i=pool.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [pool[i],pool[j]]=[pool[j],pool[i]]; }
+}
+
+function startGame(){
+  score=0; combo=0; comboMax=0; lives=diff.lives; curLevel=1; speedMultiplier=1; slowUntil=0;
+  spawnTimer=0; capsules=[]; capId=0; quizActiveCapsule=null; state='playing';
+  freshQuestionPool();
+  playfield.innerHTML = '<div class="danger-line"></div><div class="level-flash" id="levelFlash"><div class="lf-text" id="levelFlashText"></div></div>';
+  renderLives();
+  updateHUD();
+  showScreen('game');
+  lastFrame = performance.now();
+  if(rafId) cancelAnimationFrame(rafId);
+  rafId = requestAnimationFrame(loop);
+}
+
+function renderLives(){
+  let s='';
+  for(let i=0;i<diff.lives;i++) s += (i<lives ? '❤️' : '🖤');
+  livesWrap.innerHTML = '🫀 ' + s;
+}
+
+function updateHUD(){
+  scoreVal.textContent = score;
+  const mult = comboMultiplier();
+  comboVal.textContent = 'x'+mult.toFixed(1).replace('.0','');
+  const lv = getLevel(score);
+  if(lv.lvl !== curLevel){
+    curLevel = lv.lvl;
+    flashLevel(lv);
+  }
+  levelBadge.textContent = `المستوى ${curLevel} · ${lv.name}`;
+}
+function comboMultiplier(){ return Math.min(3, 1 + Math.floor(combo/5)*0.5); }
+
+function flashLevel(lv){
+  sLevel();
+  const el = document.getElementById('levelFlash');
+  const txt = document.getElementById('levelFlashText');
+  if(!el||!txt) return;
+  txt.textContent = `🚀 المستوى ${lv.lvl}\n${lv.name}`;
+  txt.style.whiteSpace='pre-line';
+  el.classList.remove('show'); void el.offsetWidth; el.classList.add('show');
+}
+
+/* ---------------- GAME LOOP ---------------- */
+function currentFall(){ return Math.max(diff.fallFloor, diff.fallStart - score*0.55); }
+function currentSpawn(){ return Math.max(diff.spawnFloor, diff.spawnStart - score*0.22); }
+
+function loop(now){
+  rafId = requestAnimationFrame(loop);
+  if(state !== 'playing'){ lastFrame = now; return; }
+  let dt = now - lastFrame; lastFrame = now;
+  if(dt>80) dt=80; // clamp huge jumps (tab switch etc.)
+
+  if(now < slowUntil) speedMultiplier = 0.45; else speedMultiplier = 1;
+
+  spawnTimer += dt;
+  const spawnD = currentSpawn();
+  if(spawnTimer >= spawnD){
+    spawnTimer -= spawnD;
+    spawnCapsule();
+  }
+
+  const pf = playfield.getBoundingClientRect();
+  const usableH = pf.height - 58;
+
+  for(let i=capsules.length-1;i>=0;i--){
+    const cap = capsules[i];
+    if(cap.resolved) continue;
+    cap.progress += (dt / cap.fallDuration) * speedMultiplier;
+    if(cap.progress >= 1){
+      handleTimeout(cap);
+    } else {
+      cap.el.style.top = (cap.progress*usableH) + 'px';
+    }
+  }
+  capsules = capsules.filter(c=>!c.removed);
+  updateHUD();
+}
+
+function spawnCapsule(){
+  const r = Math.random();
+  let type='normal', base=null;
+  if(r < 0.09 && !quizActiveCapsule){ type='quiz'; }
+  else if(r < 0.17){ type='power'; }
+  else { base = ['A','T','G','C'][Math.floor(Math.random()*4)]; }
+
+  const el = document.createElement('div');
+  el.className = 'cap' + (type==='normal' ? ' base-'+base : type==='quiz' ? ' quiz' : ' power');
+  el.textContent = type==='normal' ? base : (type==='quiz' ? '?' : '⚡');
+  const leftPct = 12 + Math.random()*76;
+  el.style.left = leftPct+'%';
+  el.style.top = '0px';
+  playfield.appendChild(el);
+
+  const fallD = currentFall() * (type==='normal' ? (0.9+Math.random()*0.25) : 1.25);
+  const cap = { id:capId++, type, base, el, progress:0, fallDuration:fallD, resolved:false, removed:false };
+  capsules.push(cap);
+  if(type==='quiz') quizActiveCapsule = cap;
+
+  el.addEventListener('pointerdown', (ev)=>{
+    ev.preventDefault();
+    if(state!=='playing' || cap.resolved) return;
+    if(type==='quiz') openQuiz(cap);
+    else if(type==='power') collectPower(cap);
+  }, {passive:false});
+}
+
+function popOut(cap, cls){
+  cap.resolved = true;
+  cap.el.classList.add(cls);
+  setTimeout(()=>{ cap.el.remove(); cap.removed=true; }, 320);
+}
+
+function spawnFloat(x,y,text,color){
+  const f = document.createElement('div');
+  f.className='floattext'; f.textContent=text; f.style.color=color||'var(--gold)';
+  f.style.left=x+'px'; f.style.top=y+'px';
+  playfield.appendChild(f);
+  setTimeout(()=>f.remove(), 750);
+}
+
+/* ---- normal capsule answer ---- */
+document.querySelectorAll('.ans-btn').forEach(btn=>{
+  btn.addEventListener('pointerdown', (ev)=>{
+    ev.preventDefault();
+    if(state!=='playing') return;
+    const letter = btn.dataset.base;
+    handleAnswerTap(letter, btn);
+  }, {passive:false});
+});
+
+function handleAnswerTap(letter, btnEl){
+  const need = COMPLEMENT[letter];
+  let best=null;
+  capsules.forEach(c=>{
+    if(c.type==='normal' && !c.resolved && c.base===need){
+      if(!best || c.progress>best.progress) best=c;
+    }
+  });
+  if(best){
+    const earlyBonus = 1 + (1-best.progress)*0.5;
+    const pts = Math.round(10 * comboMultiplier() * earlyBonus);
+    score += pts; combo++; comboMax = Math.max(comboMax, combo);
+    sCatch(best.progress);
+    const rect = best.el.getBoundingClientRect();
+    const pfRect = playfield.getBoundingClientRect();
+    spawnFloat(rect.left-pfRect.left+29, rect.top-pfRect.top, '+'+pts, BASE_COLOR[best.base]);
+    popOut(best, 'popgone');
+  } else {
+    combo = 0;
+    sWrongTap();
+    btnEl.classList.remove('wrongflash'); void btnEl.offsetWidth; btnEl.classList.add('wrongflash');
+  }
+  updateHUD();
+}
+
+function handleTimeout(cap){
+  if(cap.type==='normal'){
+    lives--; combo=0;
+    sMiss();
+    renderLives();
+    playfield.classList.remove('shake'); void playfield.offsetWidth; playfield.classList.add('shake');
+    popOut(cap,'missgone');
+    if(lives<=0){ setTimeout(()=>endGame(false), 280); }
+  } else {
+    if(cap.type==='quiz') quizActiveCapsule=null;
+    popOut(cap,'missgone');
+  }
+}
+
+/* ---- power capsule ---- */
+function collectPower(cap){
+  sPower();
+  score += 35;
+  slowUntil = performance.now() + 3500;
+  const healChance = Math.random() < 0.22 && lives < diff.lives;
+  if(healChance){ lives++; renderLives(); }
+  const rect = cap.el.getBoundingClientRect();
+  const pfRect = playfield.getBoundingClientRect();
+  spawnFloat(rect.left-pfRect.left+29, rect.top-pfRect.top, healChance?'+❤️':'+35 ⚡', '#58e1ff');
+  popOut(cap,'popgone');
+  updateHUD();
+}
+
+/* ---- quiz capsule ---- */
+const quizOverlay = document.getElementById('quizOverlay');
+const quizQ = document.getElementById('quizQ');
+const quizOpts = document.getElementById('quizOpts');
+const quizTimerNum = document.getElementById('quizTimerNum');
+let quizTimerInt=null, quizTimeLeft=8;
+
+function openQuiz(cap){
+  sQuizOpen();
+  cap.resolved = true;
+  quizActiveCapsule = null;
+  cap.el.remove(); cap.removed = true;
+  state='quiz';
+
+  if(pool.length===0) freshQuestionPool();
+  const qi = pool.pop();
+  const item = QUESTIONS[qi];
+
+  const idxArr=[0,1,2,3];
+  for(let i=idxArr.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [idxArr[i],idxArr[j]]=[idxArr[j],idxArr[i]]; }
+  const shuffled = idxArr.map(i=>({text:item.opts[i], correct:i===item.c}));
+
+  quizQ.textContent = item.q;
+  quizOpts.innerHTML='';
+  const letters=['أ','ب','ج','د'];
+  shuffled.forEach((o,i)=>{
+    const d=document.createElement('button');
+    d.className='qopt'; d.innerHTML = `<span class="b">${letters[i]}</span><span>${o.text}</span>`;
+    d.addEventListener('click', ()=>resolveQuiz(o.correct, d, shuffled));
+    quizOpts.appendChild(d);
+  });
+
+  quizTimeLeft = 8;
+  quizTimerNum.textContent = quizTimeLeft;
+  clearInterval(quizTimerInt);
+  quizTimerInt = setInterval(()=>{
+    quizTimeLeft--;
+    quizTimerNum.textContent = quizTimeLeft;
+    if(quizTimeLeft<=0){
+      clearInterval(quizTimerInt);
+      resolveQuiz(false, null, shuffled);
+    }
+  }, 1000);
+
+  quizOverlay.classList.add('active');
+}
+
+function resolveQuiz(correct, btnEl, shuffled){
+  clearInterval(quizTimerInt);
+  document.querySelectorAll('.qopt').forEach((el,i)=>{
+    el.setAttribute('disabled','true');
+    if(shuffled[i].correct) el.classList.add('correct');
+  });
+  if(btnEl && !correct) btnEl.classList.add('wrong');
+
+  if(correct){
+    sQuizOk();
+    const bonus = 80 + curLevel*15;
+    score += bonus; combo += 2; comboMax=Math.max(comboMax,combo);
+  } else {
+    sQuizNo();
+    lives--; combo=0; renderLives();
+  }
+  updateHUD();
+
+  setTimeout(()=>{
+    quizOverlay.classList.remove('active');
+    if(lives<=0){ endGame(false); }
+    else { state='playing'; lastFrame=performance.now(); }
+  }, 1100);
+}
+
+/* ---------------- PAUSE ---------------- */
+const pauseOverlay = document.getElementById('pauseOverlay');
+document.getElementById('pauseBtn').addEventListener('click', ()=>{
+  if(state!=='playing') return;
+  state='paused'; pauseOverlay.classList.add('active');
+});
+document.getElementById('resumeBtn').addEventListener('click', ()=>{
+  pauseOverlay.classList.remove('active'); state='playing'; lastFrame=performance.now();
+});
+document.getElementById('quitBtn').addEventListener('click', ()=>{
+  pauseOverlay.classList.remove('active'); endGame(false);
+});
+document.addEventListener('visibilitychange', ()=>{
+  if(document.hidden && state==='playing'){ state='paused'; pauseOverlay.classList.add('active'); }
+});
+
+/* ---------------- END ---------------- */
+async function endGame(won){
+  state='gameover';
+  sGameOver();
+  document.getElementById('finalScore').textContent = score;
+  document.getElementById('finalCombo').textContent = 'x'+comboMultiplier().toFixed(1).replace('.0','')+' (أعلى سلسلة '+comboMax+')';
+  document.getElementById('finalLevel').textContent = curLevel;
+  document.getElementById('endTitle').textContent = 'انتهت العلامات الحيوية! 💔';
+
+  const prevBest = await getBest(diffKey);
+  const badge = document.getElementById('recordBadge');
+  if(score > prevBest){
+    await setBest(diffKey, score);
+    badge.style.display='inline-block';
+  } else {
+    badge.style.display='none';
+  }
+  refreshBestLabels();
+  showScreen('end');
+}
+
+document.getElementById('replayBtn').addEventListener('click', startGame);
+document.getElementById('menuBtn').addEventListener('click', ()=>{ showScreen('start'); refreshBestLabels(); });
+
+document.getElementById('howtoBtn').addEventListener('click', ()=>{
+  alert('⚡ طريقة اللعب:\n\n1) كبسولات ملونة (A/T/G/C) تتساقط من الأعلى.\n2) اضغط زر القاعدة المُكمِّلة الصحيحة بالأسفل قبل وصول الكبسولة لخط الخطر (A↔T, G↔C).\n3) السرعة تزيد كل ما رفعت نقاطك — حافظ على سلسلة الإجابات الصحيحة لمضاعف نقاط أعلى!\n4) الكبسولة الذهبية ⚡؟ اضغط عليها مباشرة لسؤال بونص بوقت محدود.\n5) الكبسولة الزرقاء ⚡ تمنحك نقاط فورية وتبطئ الزمن قليلاً.\n6) فوات كبسولة عادية = فقدان علامة حيوية واحدة. فقدان كل العلامات = نهاية الجولة.\n\nاكسر رقمك القياسي يا دكتور! 🏆');
+});
+
+})();
+</script>
+</body>
+</html>
