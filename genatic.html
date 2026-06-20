@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<title>ساحة الچينات | تحدي د. هالة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;800;900&family=Tajawal:wght@400;500;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0a0f1e;
+    --panel:#101a30;
+    --panel-2:#16223d;
+    --line:#283456;
+    --text:#e9eefb;
+    --muted:#8493b8;
+    --a:#4c8dff;   /* Adenine - كيمياء النيوكليوتيدات */
+    --a-d:#1d4ed8;
+    --g:#2dd4bf;   /* Guanine - DNA & RNA */
+    --g-d:#0d9488;
+    --t:#fb7185;   /* Thymine/Uracil - الأيض والنقرس */
+    --t-d:#be123c;
+    --c:#fbbf24;   /* Cytosine - تحدي شامل */
+    --c-d:#b45309;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{height:100%;}
+  body{
+    background:
+      radial-gradient(1100px 600px at 12% -10%, #16264a 0%, transparent 60%),
+      radial-gradient(900px 500px at 110% 10%, #1a1233 0%, transparent 55%),
+      var(--ink);
+    color:var(--text);
+    font-family:'Tajawal', sans-serif;
+    min-height:100vh;
+    overflow-x:hidden;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .font-display{font-family:'Cairo', sans-serif;}
+  .mono{font-family:'JetBrains Mono', monospace; direction:ltr; display:inline-block;}
+
+  /* ---------- decorative helix backbone (ambient) ---------- */
+  .helix-bg{
+    position:fixed; inset:0; pointer-events:none; z-index:0; opacity:.35;
+  }
+  .helix-bg svg{width:100%; height:100%;}
+  .strand{ stroke-dasharray:6 10; animation:drift 14s linear infinite; }
+  .strand.s2{ animation-direction:reverse; opacity:.6; }
+  @keyframes drift{ to{ stroke-dashoffset:-320; } }
+
+  .app{ position:relative; z-index:1; min-height:100vh; display:flex; flex-direction:column; }
+
+  /* ---------- header ---------- */
+  .topbar{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 18px; border-bottom:1px solid var(--line);
+    background:linear-gradient(180deg, rgba(16,26,48,.9), rgba(16,26,48,.4));
+    backdrop-filter:blur(6px); position:sticky; top:0; z-index:20;
+  }
+  .brand{ display:flex; align-items:center; gap:10px; }
+  .brand .dna-icon{ font-size:22px; filter:drop-shadow(0 0 8px rgba(76,141,255,.6)); }
+  .brand h1{ font-size:18px; letter-spacing:.3px; }
+  .brand small{ display:block; color:var(--muted); font-size:11px; margin-top:1px; }
+  .icon-btn{
+    background:var(--panel-2); border:1px solid var(--line); color:var(--text);
+    width:36px; height:36px; border-radius:10px; font-size:16px; cursor:pointer;
+  }
+  .icon-btn:focus-visible, button:focus-visible, input:focus-visible{ outline:2px solid var(--g); outline-offset:2px; }
+
+  /* ---------- screens ---------- */
+  .screen{ flex:1; display:none; padding:18px; }
+  .screen.active{ display:flex; flex-direction:column; }
+
+  /* ===== SETUP SCREEN ===== */
+  #setup{ align-items:center; justify-content:flex-start; gap:18px; padding-top:24px; }
+  .hero{ text-align:center; max-width:520px; margin:0 auto; }
+  .hero .eyebrow{
+    color:var(--g); font-size:12px; letter-spacing:2px; font-weight:700;
+    font-family:'JetBrains Mono', monospace; direction:ltr;
+  }
+  .hero h2{ font-size:30px; margin:8px 0 6px; line-height:1.25; }
+  .hero p{ color:var(--muted); font-size:14.5px; line-height:1.7; }
+
+  .card{
+    background:var(--panel); border:1px solid var(--line); border-radius:18px;
+    padding:18px; width:100%; max-width:520px; margin:0 auto;
+  }
+  .card h3{ font-size:15px; margin-bottom:12px; color:var(--text); }
+  .row-gap{ display:flex; flex-direction:column; gap:10px; }
+
+  .count-row{ display:flex; gap:8px; }
+  .count-btn{
+    flex:1; padding:12px 0; border-radius:12px; border:1px solid var(--line);
+    background:var(--panel-2); color:var(--text); font-family:'JetBrains Mono', monospace;
+    font-size:16px; font-weight:700; cursor:pointer; transition:.15s;
+  }
+  .count-btn.active{ background:linear-gradient(135deg, var(--a), var(--g)); border-color:transparent; color:#06121f; }
+
+  .team-input{
+    display:flex; align-items:center; gap:10px; background:var(--panel-2);
+    border:1px solid var(--line); border-radius:12px; padding:8px 10px;
+  }
+  .team-dot{ width:14px; height:14px; border-radius:50%; flex-shrink:0; box-shadow:0 0 10px currentColor;}
+  .team-input input{
+    flex:1; background:transparent; border:none; color:var(--text); font-size:14px;
+    font-family:'Tajawal', sans-serif; padding:6px 2px;
+  }
+  .team-input input::placeholder{ color:var(--muted); }
+
+  .start-btn{
+    width:100%; max-width:520px; margin:6px auto 0; padding:16px;
+    border:none; border-radius:14px; cursor:pointer;
+    background:linear-gradient(135deg, var(--a), var(--g));
+    color:#06121f; font-family:'Cairo', sans-serif; font-weight:800; font-size:16px;
+    box-shadow:0 10px 30px -10px rgba(45,212,191,.5);
+  }
+  .start-btn:active{ transform:scale(.98); }
+
+  .legend{
+    display:grid; grid-template-columns:repeat(4,1fr); gap:8px; max-width:520px; margin:0 auto; width:100%;
+  }
+  .legend .tag{
+    border-radius:10px; padding:8px 6px; text-align:center; font-size:11px; font-weight:700;
+    border:1px solid var(--line); background:var(--panel-2);
+  }
+
+  /* ===== BOARD SCREEN ===== */
+  #board{ gap:14px; }
+  .scoreboard{ display:flex; gap:8px; overflow-x:auto; padding-bottom:4px; }
+  .team-chip{
+    flex:0 0 auto; min-width:108px; background:var(--panel); border:1px solid var(--line);
+    border-radius:14px; padding:10px 12px; position:relative; transition:.2s;
+  }
+  .team-chip.turn{ border-color:var(--g); box-shadow:0 0 0 1px var(--g), 0 0 18px -4px var(--g); }
+  .team-chip .name{ font-size:12.5px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:120px;}
+  .team-chip .score{ font-family:'JetBrains Mono', monospace; font-size:18px; font-weight:700; margin-top:2px; }
+  .team-chip .turn-flag{
+    position:absolute; top:-9px; left:50%; transform:translateX(-50%);
+    font-size:10px; background:var(--g); color:#06241f; padding:1px 8px; border-radius:20px; font-weight:800;
+    font-family:'Cairo',sans-serif; white-space:nowrap;
+  }
+
+  .board-wrap{ display:flex; gap:8px; flex:1; }
+  .helix-track{
+    width:20px; display:flex; flex-direction:column; justify-content:space-between;
+    padding:6px 0; flex-shrink:0;
+  }
+  .rung{ width:14px; height:14px; border-radius:50%; border:2px solid var(--line); margin:0 auto; transition:.4s; }
+  .rung.lit{ border-color:transparent; box-shadow:0 0 10px currentColor; animation:pop .4s ease; }
+  @keyframes pop{ 0%{transform:scale(0);} 60%{transform:scale(1.3);} 100%{transform:scale(1);} }
+
+  .grid{
+    flex:1; display:grid; grid-template-columns:repeat(4, 1fr); gap:6px;
+  }
+  .cat-head{
+    grid-row:1; border-radius:10px; padding:8px 4px; text-align:center;
+    font-family:'Cairo',sans-serif; font-weight:800; font-size:11.5px; line-height:1.3;
+    color:#06121f; display:flex; align-items:center; justify-content:center; min-height:48px;
+  }
+  .cell{
+    border-radius:10px; border:1px solid var(--line); background:var(--panel);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'JetBrains Mono', monospace; font-weight:700; font-size:16px;
+    cursor:pointer; min-height:46px; position:relative; transition:.15s;
+    color:var(--catcolor, var(--text));
+  }
+  .cell:active{ transform:scale(.95); }
+  .cell.used{ background:transparent; border-style:dashed; opacity:.25; cursor:default; }
+  .cell .dd-mark{ position:absolute; top:2px; left:4px; font-size:8px; opacity:0; }
+
+  .hint{ text-align:center; color:var(--muted); font-size:11.5px; margin-top:2px; }
+
+  /* ===== QUESTION MODAL ===== */
+  .overlay{
+    position:fixed; inset:0; background:rgba(5,8,16,.78); backdrop-filter:blur(3px);
+    display:none; align-items:flex-end; justify-content:center; z-index:50; padding:0;
+  }
+  .overlay.active{ display:flex; }
+  .qmodal{
+    width:100%; max-width:560px; background:var(--panel); border:1px solid var(--line);
+    border-top-left-radius:24px; border-top-right-radius:24px;
+    padding:20px 18px 26px; max-height:92vh; overflow-y:auto;
+    animation:slideup .3s ease;
+  }
+  @keyframes slideup{ from{ transform:translateY(100%);} to{transform:translateY(0);} }
+  .qmodal-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
+  .qmodal-cat{
+    font-size:11px; font-weight:800; padding:5px 12px; border-radius:20px; color:#06121f;
+  }
+  .qmodal-pts{ font-family:'JetBrains Mono',monospace; font-weight:700; font-size:20px; }
+  .qtext{ font-family:'Cairo', sans-serif; font-size:18px; font-weight:700; line-height:1.6; margin-bottom:16px; }
+  .dd-banner{
+    background:linear-gradient(135deg,#3a2c00,#1a1200); border:1px solid var(--c); color:var(--c);
+    border-radius:12px; padding:10px 12px; font-size:13px; margin-bottom:14px; font-weight:700;
+  }
+  .wager-box{ display:flex; gap:8px; align-items:center; margin-bottom:16px; }
+  .wager-box input{
+    flex:1; background:var(--panel-2); border:1px solid var(--line); border-radius:10px;
+    padding:10px; color:var(--text); font-family:'JetBrains Mono', monospace; font-size:16px; text-align:center;
+  }
+  .opt{
+    width:100%; text-align:right; background:var(--panel-2); border:1px solid var(--line);
+    color:var(--text); padding:13px 14px; border-radius:12px; margin-bottom:9px; font-size:14.5px;
+    cursor:default; font-family:'Tajawal',sans-serif; display:flex; gap:10px; align-items:center;
+    transition:.2s;
+  }
+  .opt .bullet{
+    width:22px; height:22px; border-radius:50%; border:1.5px solid var(--line); flex-shrink:0;
+    display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; font-family:'JetBrains Mono';
+  }
+  .opt.correct{ border-color:var(--g); background:rgba(45,212,191,.12); }
+  .opt.correct .bullet{ background:var(--g); border-color:var(--g); color:#06241f; }
+
+  .reveal-btn{
+    width:100%; padding:14px; border:none; border-radius:12px; cursor:pointer;
+    background:var(--panel-2); border:1px solid var(--line); color:var(--text);
+    font-family:'Cairo',sans-serif; font-weight:800; font-size:15px; margin-top:6px;
+  }
+  .judge{ display:none; flex-direction:column; gap:10px; margin-top:14px; }
+  .judge.active{ display:flex; }
+  .judge p{ font-size:12.5px; color:var(--muted); text-align:center; margin-bottom:2px;}
+  .judge-row{ display:flex; gap:8px; }
+  .judge-btn{
+    flex:1; padding:13px; border-radius:12px; border:none; cursor:pointer;
+    font-family:'Cairo',sans-serif; font-weight:800; font-size:14px;
+  }
+  .judge-btn.ok{ background:var(--g); color:#06241f; }
+  .judge-btn.no{ background:var(--t); color:#2b0007; }
+  .judge-pick{
+    display:flex; flex-wrap:wrap; gap:6px; justify-content:center; margin-top:4px;
+  }
+  .judge-pick button{
+    padding:7px 12px; border-radius:20px; border:1px solid var(--line); background:var(--panel-2);
+    color:var(--text); font-size:12px; cursor:pointer;
+  }
+  .judge-pick button.sel{ border-color:var(--g); color:var(--g); }
+
+  /* ===== END SCREEN ===== */
+  #end{ align-items:center; justify-content:center; text-align:center; gap:14px; position:relative; }
+  #end .trophy{ font-size:54px; filter:drop-shadow(0 0 18px rgba(251,191,36,.6)); }
+  #end h2{ font-size:24px; }
+  .podium{ width:100%; max-width:420px; display:flex; flex-direction:column; gap:8px; margin-top:6px; }
+  .prow{
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+    background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:12px 14px;
+  }
+  .prow .left{ display:flex; align-items:center; gap:10px; }
+  .prow .medal{ font-size:20px; width:26px; text-align:center; }
+  .prow .pname{ font-weight:700; font-size:14.5px; }
+  .prow .pscore{ font-family:'JetBrains Mono',monospace; font-weight:700; font-size:17px; }
+  .prow.first{ border-color:var(--c); box-shadow:0 0 24px -8px var(--c); }
+
+  .replay-btn{
+    margin-top:12px; padding:14px 26px; border:none; border-radius:14px; cursor:pointer;
+    background:linear-gradient(135deg, var(--a), var(--g)); color:#06121f;
+    font-family:'Cairo',sans-serif; font-weight:800; font-size:15px;
+  }
+
+  .confetti-piece{
+    position:fixed; top:-30px; font-family:'JetBrains Mono',monospace; font-weight:800;
+    font-size:18px; z-index:60; pointer-events:none; animation:fall linear forwards;
+  }
+  @keyframes fall{ to{ transform:translateY(110vh) rotate(360deg); opacity:.2; } }
+
+  @media (prefers-reduced-motion: reduce){
+    .strand, .rung.lit, .confetti-piece, .qmodal{ animation:none !important; }
+  }
+
+  @media (max-width:380px){
+    .cell{ font-size:14px; min-height:40px; }
+    .cat-head{ font-size:10px; min-height:42px; }
+    .hero h2{ font-size:24px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="helix-bg">
+  <svg viewBox="0 0 200 800" preserveAspectRatio="none">
+    <path class="strand s1" d="M20,0 C60,40 -20,80 20,120 C60,160 -20,200 20,240 C60,280 -20,320 20,360 C60,400 -20,440 20,480 C60,520 -20,560 20,600 C60,640 -20,680 20,720 C60,760 -20,800 20,840" stroke="#4c8dff" stroke-width="1.4" fill="none"/>
+    <path class="strand s2" d="M20,0 C-20,40 60,80 20,120 C-20,160 60,200 20,240 C-20,280 60,320 20,360 C-20,400 60,440 20,480 C-20,520 60,560 20,600 C-20,640 60,680 20,720 C-20,760 60,800 20,840" stroke="#2dd4bf" stroke-width="1.4" fill="none"/>
+  </svg>
+</div>
+
+<div class="app">
+
+  <div class="topbar">
+    <div class="brand">
+      <span class="dna-icon">🧬</span>
+      <div>
+        <h1 class="font-display">ساحة الچينات</h1>
+        <small>مبني على محاضرات د. هالة 1+2+3</small>
+      </div>
+    </div>
+    <button class="icon-btn" id="howtoBtn" title="كيف تُلعب؟">؟</button>
+  </div>
+
+  <!-- ============ SETUP ============ -->
+  <div class="screen active" id="setup">
+    <div class="hero">
+      <span class="eyebrow">DOCTORS-ONLY TRIVIA</span>
+      <h2 class="font-display">جاهزين تثبتوا إنكم درستوا الشيت صح؟ 😏</h2>
+      <p>لعبة فِرَق على طريقة المسابقات التلفزيونية، أسئلتها من تركيب النيوكليوتيدات وDNA/RNA والأيض والنقرس. اختاروا فئة وقيمة نقاط، ناقشوا الإجابة بصوت عالٍ، والمضيف يحكم.</p>
+    </div>
+
+    <div class="card">
+      <h3>كم عدد الفرق؟</h3>
+      <div class="count-row" id="teamCountRow">
+        <button class="count-btn" data-n="2">فريقين</button>
+        <button class="count-btn active" data-n="3">3 فرق</button>
+        <button class="count-btn" data-n="4">4 فرق</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>أسماء الفرق</h3>
+      <div class="row-gap" id="teamInputs"></div>
+    </div>
+
+    <button class="start-btn font-display" id="startBtn">🚀 ابدأ المباراة</button>
+
+    <div class="legend">
+      <div class="tag" style="color:var(--a); border-color:var(--a)">A · نيوكليوتيدات</div>
+      <div class="tag" style="color:var(--g); border-color:var(--g)">G · DNA/RNA</div>
+      <div class="tag" style="color:var(--t); border-color:var(--t)">T · الأيض والنقرس</div>
+      <div class="tag" style="color:var(--c); border-color:var(--c)">C · تحدي شامل</div>
+    </div>
+  </div>
+
+  <!-- ============ BOARD ============ -->
+  <div class="screen" id="board">
+    <div class="scoreboard" id="scoreboard"></div>
+    <div class="board-wrap">
+      <div class="helix-track" id="helixTrack"></div>
+      <div class="grid" id="grid"></div>
+    </div>
+    <p class="hint">دور <span id="turnName" style="color:var(--g); font-weight:700;"></span> · اختاروا فئة وقيمة نقاط 👆</p>
+  </div>
+
+  <!-- ============ END ============ -->
+  <div class="screen" id="end">
+    <div class="trophy">🏆</div>
+    <h2 class="font-display">انتهت المباراة!</h2>
+    <div class="podium" id="podium"></div>
+    <button class="replay-btn font-display" id="replayBtn">🔁 مباراة جديدة</button>
+  </div>
+
+</div>
+
+<!-- ============ QUESTION OVERLAY ============ -->
+<div class="overlay" id="overlay">
+  <div class="qmodal">
+    <div class="qmodal-head">
+      <span class="qmodal-cat" id="qCat">فئة</span>
+      <span class="qmodal-pts mono" id="qPts">100</span>
+    </div>
+
+    <div id="ddSection" style="display:none;">
+      <div class="dd-banner">⚡ سؤال مضاعف! راهنوا بأي عدد نقاط تريدونه (بحد أدنى 100)</div>
+      <div class="wager-box">
+        <input type="number" id="wagerInput" min="100" step="50" value="100">
+        <button class="reveal-btn" style="width:auto; padding:13px 18px;" id="wagerConfirm">تأكيد الرهان</button>
+      </div>
+    </div>
+
+    <div id="qBody" style="display:none;">
+      <p class="qtext font-display" id="qText"></p>
+      <div id="qOptions"></div>
+      <button class="reveal-btn" id="revealBtn">👁️ كشف الإجابة الصحيحة</button>
+
+      <div class="judge" id="judge">
+        <p>مين جاوب صح؟ (اختر الفريق ثم اضغط صحيحة)</p>
+        <div class="judge-pick" id="judgePick"></div>
+        <div class="judge-row">
+          <button class="judge-btn ok" id="judgeOk">✅ إجابة صحيحة</button>
+          <button class="judge-btn no" id="judgeNo">❌ لا أحد أجاب</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------------- DATA ---------------- */
+  const CATS = [
+    { name:"كيمياء النيوكليوتيدات", key:"A", color:"var(--a)", solid:"#4c8dff" },
+    { name:"DNA & RNA",            key:"G", color:"var(--g)", solid:"#2dd4bf" },
+    { name:"الأيض والنقرس",         key:"T", color:"var(--t)", solid:"#fb7185" },
+    { name:"تحدي شامل",            key:"C", color:"var(--c)", solid:"#fbbf24" },
+  ];
+  const POINTS = [100,200,300,400,500];
+
+  const QUESTIONS = [
+    [ // A - كيمياء النيوكليوتيدات
+      {q:"ما المكونات الثلاثة الأساسية لوحدة النيوكليوتيد الواحدة؟", opts:["قاعدة نيتروجينية + سكر خماسي + مجموعة فوسفات","قاعدة نيتروجينية + سكر سداسي + بروتين","حمض أميني + دهون + سكر","سكر + بروتين + فوسفات فقط"], c:0},
+      {q:"ما الفرق الجوهري بين الريبوز والديوكسيريبوز؟", opts:["غياب أكسجين عند الكربون 2' في الديوكسيريبوز","غياب أكسجين عند الكربون 5' في الريبوز","الديوكسيريبوز يحتوي فوسفات إضافي","لا يوجد فرق بينهما"], c:0},
+      {q:"أي مما يلي بيورينات (Purines) ثنائية الحلقة؟", opts:["الأدينين والجوانين","السيتوزين والثايمين","اليوراسيل والسيتوزين","الثايمين فقط"], c:0},
+      {q:"عند تكوّن نيوكليوزيد من بيورين، أين ترتبط القاعدة بالسكر؟", opts:["عند موضع N9","عند موضع N1","عند الكربون C5'","عند الكربون C3'"], c:0},
+      {q:"أي جزيء يُصنَّف كـ«رسول ثانوي» (Second Messenger) داخل الخلية؟", opts:["cAMP","ATP","NAD+","FAD"], c:0},
+    ],
+    [ // G - DNA & RNA
+      {q:"كم رابطة هيدروجينية تربط الأدينين بالثايمين؟", opts:["رابطتان (2)","ثلاث روابط (3)","رابطة واحدة (1)","أربع روابط (4)"], c:0},
+      {q:"ما اسم البروتينات الموجبة الشحنة التي يلتف حولها DNA ليتكثف؟", opts:["الهستونات (Histones)","الغلوبيولينات","الكولاجين","الإنزيمات المساعدة"], c:0},
+      {q:"ما الترتيب الصحيح للعقيدة المركزية (Central Dogma)؟", opts:["DNA ← نسخ ← RNA ← ترجمة ← بروتين","RNA ← DNA ← بروتين","بروتين ← RNA ← DNA","DNA ← ترجمة ← RNA ← نسخ ← بروتين"], c:0},
+      {q:"لماذا تُوصف خيوط DNA بأنها Antiparallel (متعاكسة)؟", opts:["أحد الخيطين 5'→3' والآخر 3'→5'","كلاهما يسير 5'→3'","الخيطان منفصلان كلياً عن بعضهما","لا يوجد لـ DNA اتجاه محدد"], c:0},
+      {q:"ما الذي يفسر تفاوت طول جزيئات RNA من رسالة لأخرى؟", opts:["طول RNA يتحدد حسب حجم الرسالة الجينية المطلوبة","طول RNA ثابت دائماً كـ DNA","RNA أطول من DNA دائماً بشكل ثابت","لا علاقة لطول RNA بالبروتين الناتج"], c:0},
+    ],
+    [ // T - الأيض والنقرس
+      {q:"ما الناتج النهائي الذي يتحول إليه البيورين الحر لأن الجسم لا يستطيع فتح حلقته؟", opts:["حمض اليوريك (Uric Acid)","ثاني أكسيد الكربون فقط","الأمونيا فقط","الجلوكوز"], c:0},
+      {q:"كم تقريباً نسبة إفراز حمض اليوريك عبر الكلى (البول)؟", opts:["حوالي 75%","حوالي 25%","حوالي 50%","100%"], c:0},
+      {q:"ما الإنزيم الذي يمثل الخطوة المحددة لمعدل (Rate Limiting) في تخليق البيورينات؟", opts:["PRPP Synthetase","DNase","RNase","Phosphorylase"], c:0},
+      {q:"ما الأحماض الأمينية الثلاثة المساهمة في بناء حلقة البيورين من الصفر؟", opts:["الجليسين، الجلوتامين، الأسبارتات","الليسين، التربتوفان، الفالين","الألانين والسيرين فقط","الهيستيدين، البرولين، التيروزين"], c:0},
+      {q:"مساريّ «إعادة فسفرة البيورينات الحرة» و«فسفرة النيوكليوزيدات» يُعرفان معاً باسم:", opts:["مسارات الإنقاذ (Salvage Pathways)","مسارات البناء من الصفر (De Novo)","دورة كريبس","التحلل السكري"], c:0},
+    ],
+    [ // C - تحدي شامل
+      {q:"ماذا يعني اختصار DNA؟", opts:["Deoxyribonucleic Acid","Dynamic Nuclear Acid","Double Nucleotide Acid","Di-Ribonucleic Acid"], c:0},
+      {q:"أي قاعدة نيتروجينية توجد في RNA فقط وتغيب عن DNA؟", opts:["اليوراسيل (Uracil)","الثايمين (Thymine)","الأدينين","الجوانين"], c:0},
+      {q:"ما السكر الخماسي المكوّن لـ DNA؟", opts:["الديوكسيريبوز","الريبوز","الجلوكوز","الفركتوز"], c:0},
+      {q:"فرط إنتاج حمض اليوريك يرتبط سريرياً بشكل خاص بأي مرض؟", opts:["النقرس (Gout)","داء السكري","فقر الدم","الربو"], c:0},
+      {q:"أي جزيء يُعد نقطة التقاء مركزية بين تخليق البيورينات والبيريميدينات و NAD و NADP؟", opts:["PRPP","ATP","THF","Ribose-5-Phosphate"], c:0},
+    ],
+  ];
+
+  /* ---------------- STATE ---------------- */
+  let teams = [];
+  let currentTeam = 0;
+  let used = []; // 4x5 bool
+  let dailyDoubles = []; // [{cat,row}]
+  let answeredCount = 0;
+  let activeCell = null; // {cat,row,points,isDD}
+  let wager = 0;
+  let shuffledOpts = []; // current question shuffled options w/ correctness flag
+
+  const teamColors = ["#4c8dff","#fbbf24","#2dd4bf","#fb7185"];
+
+  /* ---------------- AUDIO (tiny synth beeps) ---------------- */
+  let actx;
+  function beep(freq, dur, type){
+    try{
+      actx = actx || new (window.AudioContext||window.webkitAudioContext)();
+      const o = actx.createOscillator(), g = actx.createGain();
+      o.type = type||"sine"; o.frequency.value = freq;
+      o.connect(g); g.connect(actx.destination);
+      g.gain.setValueAtTime(.08, actx.currentTime);
+      g.gain.exponentialRampToValueAtTime(.001, actx.currentTime+dur);
+      o.start(); o.stop(actx.currentTime+dur);
+    }catch(e){}
+  }
+  const sndPick = ()=>beep(420,.1,"triangle");
+  const sndCorrect = ()=>{beep(523,.12); setTimeout(()=>beep(784,.18),110);};
+  const sndWrong = ()=>{beep(160,.25,"sawtooth");};
+  const sndWin = ()=>{[523,659,784,1046].forEach((f,i)=>setTimeout(()=>beep(f,.2),i*120));};
+
+  /* ---------------- SETUP SCREEN ---------------- */
+  const teamCountRow = document.getElementById('teamCountRow');
+  const teamInputs = document.getElementById('teamInputs');
+  let teamCount = 3;
+
+  function renderTeamInputs(){
+    teamInputs.innerHTML = "";
+    for(let i=0;i<teamCount;i++){
+      const wrap = document.createElement('div');
+      wrap.className = 'team-input';
+      wrap.innerHTML = `<span class="team-dot" style="background:${teamColors[i]}; color:${teamColors[i]}"></span>
+        <input type="text" maxlength="16" placeholder="اسم الفريق ${i+1}" value="${defaultName(i)}" id="teamName${i}">`;
+      teamInputs.appendChild(wrap);
+    }
+  }
+  function defaultName(i){
+    const names = ["فريق البروتين","فريق الهليكس","فريق PRPP","فريق الهستون"];
+    return names[i] || ("فريق "+(i+1));
+  }
+  teamCountRow.addEventListener('click', e=>{
+    const btn = e.target.closest('.count-btn'); if(!btn) return;
+    teamCountRow.querySelectorAll('.count-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    teamCount = parseInt(btn.dataset.n,10);
+    renderTeamInputs();
+  });
+  renderTeamInputs();
+
+  document.getElementById('startBtn').addEventListener('click', startGame);
+
+  function startGame(){
+    teams = [];
+    for(let i=0;i<teamCount;i++){
+      const val = document.getElementById('teamName'+i).value.trim();
+      teams.push({ name: val || defaultName(i), score:0, color: teamColors[i] });
+    }
+    currentTeam = 0;
+    used = CATS.map(()=>POINTS.map(()=>false));
+    answeredCount = 0;
+
+    // pick 2 unique daily doubles among rows>=1 (index 1..4)
+    dailyDoubles = [];
+    const pool = [];
+    for(let c=0;c<4;c++) for(let r=1;r<5;r++) pool.push({cat:c,row:r});
+    for(let i=pool.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [pool[i],pool[j]]=[pool[j],pool[i]]; }
+    dailyDoubles = pool.slice(0,2);
+
+    renderHelix();
+    renderBoard();
+    showScreen('board');
+  }
+
+  /* ---------------- BOARD SCREEN ---------------- */
+  function showScreen(id){
+    document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+  }
+
+  function renderHelix(){
+    const track = document.getElementById('helixTrack');
+    track.innerHTML = "";
+    for(let i=0;i<20;i++){
+      const d = document.createElement('div');
+      d.className = 'rung';
+      d.id = 'rung'+i;
+      track.appendChild(d);
+    }
+  }
+  function litHelixStep(colorVar){
+    const idx = answeredCount; // 0-based before increment used at call site
+    const el = document.getElementById('rung'+idx);
+    if(el){
+      el.style.color = colorVar;
+      el.style.background = colorVar;
+      el.classList.add('lit');
+    }
+  }
+
+  function renderScoreboard(){
+    const sb = document.getElementById('scoreboard');
+    sb.innerHTML = "";
+    teams.forEach((t,i)=>{
+      const chip = document.createElement('div');
+      chip.className = 'team-chip' + (i===currentTeam ? ' turn':'');
+      chip.style.borderColor = i===currentTeam ? '' : 'var(--line)';
+      chip.innerHTML = `${i===currentTeam ? '<span class="turn-flag font-display">الدور الآن</span>' : ''}
+        <div class="name" style="color:${t.color}">${escapeHtml(t.name)}</div>
+        <div class="score mono">${t.score}</div>`;
+      sb.appendChild(chip);
+    });
+    document.getElementById('turnName').textContent = teams[currentTeam].name;
+  }
+
+  function renderBoard(){
+    renderScoreboard();
+    const grid = document.getElementById('grid');
+    grid.innerHTML = "";
+    grid.style.gridTemplateRows = `auto repeat(${POINTS.length}, 1fr)`;
+
+    CATS.forEach((cat)=>{
+      const head = document.createElement('div');
+      head.className = 'cat-head';
+      head.style.background = `linear-gradient(135deg, ${cat.solid}, ${shade(cat.solid)})`;
+      head.textContent = cat.name;
+      grid.appendChild(head);
+    });
+
+    POINTS.forEach((pts, r)=>{
+      CATS.forEach((cat, c)=>{
+        const cell = document.createElement('div');
+        const isUsed = used[c][r];
+        cell.className = 'cell' + (isUsed ? ' used':'');
+        cell.style.setProperty('--catcolor', cat.solid);
+        cell.textContent = isUsed ? '' : pts;
+        if(!isUsed){
+          cell.addEventListener('click', ()=>openCell(c,r,pts));
+        }
+        grid.appendChild(cell);
+      });
+    });
+  }
+
+  function shade(hex){
+    // simple darken for gradient
+    const n = parseInt(hex.slice(1),16);
+    let r=(n>>16)&255, g=(n>>8)&255, b=n&255;
+    r=Math.max(0,r-60); g=Math.max(0,g-60); b=Math.max(0,b-60);
+    return `rgb(${r},${g},${b})`;
+  }
+  function escapeHtml(s){ const d=document.createElement('div'); d.innerText=s; return d.innerHTML; }
+
+  /* ---------------- QUESTION FLOW ---------------- */
+  const overlay = document.getElementById('overlay');
+  const qCat = document.getElementById('qCat');
+  const qPts = document.getElementById('qPts');
+  const ddSection = document.getElementById('ddSection');
+  const qBody = document.getElementById('qBody');
+  const qText = document.getElementById('qText');
+  const qOptions = document.getElementById('qOptions');
+  const revealBtn = document.getElementById('revealBtn');
+  const judge = document.getElementById('judge');
+  const judgePick = document.getElementById('judgePick');
+  let pickedTeam = currentTeam;
+
+  function openCell(c,r,pts){
+    sndPick();
+    const isDD = dailyDoubles.some(d=>d.cat===c && d.row===r);
+    activeCell = { cat:c, row:r, points:pts, isDD };
+    pickedTeam = currentTeam;
+
+    const cat = CATS[c];
+    qCat.textContent = cat.name;
+    qCat.style.background = cat.solid;
+    qPts.textContent = pts;
+
+    judge.classList.remove('active');
+    revealBtn.style.display = 'block';
+    qOptions.innerHTML = '';
+
+    if(isDD){
+      ddSection.style.display = 'block';
+      qBody.style.display = 'none';
+      const wagerInput = document.getElementById('wagerInput');
+      const maxW = Math.max(teams[currentTeam].score, 500);
+      wagerInput.max = maxW;
+      wagerInput.value = Math.min(200, maxW);
+      document.getElementById('wagerConfirm').onclick = ()=>{
+        let w = parseInt(wagerInput.value,10);
+        if(isNaN(w) || w<100) w = 100;
+        if(w>maxW) w = maxW;
+        wager = w;
+        ddSection.style.display = 'none';
+        renderQuestionBody();
+      };
+    } else {
+      ddSection.style.display = 'none';
+      renderQuestionBody();
+    }
+    overlay.classList.add('active');
+  }
+
+  function renderQuestionBody(){
+    const {cat,row} = activeCell;
+    const item = QUESTIONS[cat][row];
+    qText.textContent = item.q;
+
+    // shuffle options
+    const idxArr = [0,1,2,3];
+    for(let i=idxArr.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [idxArr[i],idxArr[j]]=[idxArr[j],idxArr[i]]; }
+    shuffledOpts = idxArr.map(i=>({ text:item.opts[i], correct: i===item.c }));
+
+    qOptions.innerHTML = '';
+    const letters = ['أ','ب','ج','د'];
+    shuffledOpts.forEach((o,i)=>{
+      const div = document.createElement('div');
+      div.className = 'opt';
+      div.id = 'opt'+i;
+      div.innerHTML = `<span class="bullet">${letters[i]}</span><span>${escapeHtml(o.text)}</span>`;
+      qOptions.appendChild(div);
+    });
+
+    qBody.style.display = 'block';
+  }
+
+  revealBtn.addEventListener('click', ()=>{
+    shuffledOpts.forEach((o,i)=>{
+      if(o.correct) document.getElementById('opt'+i).classList.add('correct');
+    });
+    revealBtn.style.display = 'none';
+    judge.classList.add('active');
+    renderJudgePick();
+  });
+
+  function renderJudgePick(){
+    judgePick.innerHTML = '';
+    teams.forEach((t,i)=>{
+      const b = document.createElement('button');
+      b.textContent = t.name;
+      b.style.color = t.color;
+      if(i===pickedTeam) b.classList.add('sel');
+      b.onclick = ()=>{ pickedTeam=i; renderJudgePick(); };
+      judgePick.appendChild(b);
+    });
+  }
+
+  document.getElementById('judgeOk').addEventListener('click', ()=>resolveCell(true));
+  document.getElementById('judgeNo').addEventListener('click', ()=>resolveCell(false));
+
+  function resolveCell(isCorrect){
+    const {cat,row,points,isDD} = activeCell;
+    const pts = isDD ? wager : points;
+
+    if(isCorrect){
+      sndCorrect();
+      teams[pickedTeam].score += pts;
+      currentTeam = pickedTeam; // winner keeps control
+    } else {
+      sndWrong();
+      if(isDD){ teams[currentTeam].score -= pts; }
+      currentTeam = (currentTeam+1) % teams.length; // pass turn
+    }
+
+    used[cat][row] = true;
+    const catColorVar = ['var(--a)','var(--g)','var(--t)','var(--c)'][cat];
+    litHelixStep(catColorVar);
+    answeredCount++;
+
+    overlay.classList.remove('active');
+    renderBoard();
+
+    if(answeredCount >= 20){
+      setTimeout(showEnd, 350);
+    }
+  }
+
+  /* ---------------- END SCREEN ---------------- */
+  function showEnd(){
+    sndWin();
+    const sorted = [...teams].sort((a,b)=>b.score-a.score);
+    const podium = document.getElementById('podium');
+    const medals = ['🥇','🥈','🥉','🎖️'];
+    podium.innerHTML = '';
+    sorted.forEach((t,i)=>{
+      const row = document.createElement('div');
+      row.className = 'prow' + (i===0?' first':'');
+      row.innerHTML = `<div class="left"><span class="medal">${medals[i]||'🎗️'}</span>
+        <span class="pname" style="color:${t.color}">${escapeHtml(t.name)}</span></div>
+        <span class="pscore mono">${t.score}</span>`;
+      podium.appendChild(row);
+    });
+    showScreen('end');
+    spawnConfetti();
+  }
+
+  function spawnConfetti(){
+    const letters = ['A','T','G','C'];
+    const colors = ['#4c8dff','#fb7185','#2dd4bf','#fbbf24'];
+    for(let i=0;i<46;i++){
+      setTimeout(()=>{
+        const el = document.createElement('div');
+        const idx = Math.floor(Math.random()*4);
+        el.className = 'confetti-piece';
+        el.textContent = letters[idx];
+        el.style.color = colors[idx];
+        el.style.left = Math.random()*100 + 'vw';
+        el.style.animationDuration = (2.2 + Math.random()*1.8) + 's';
+        el.style.fontSize = (14 + Math.random()*14) + 'px';
+        document.body.appendChild(el);
+        setTimeout(()=>el.remove(), 4200);
+      }, i*45);
+    }
+  }
+
+  document.getElementById('replayBtn').addEventListener('click', ()=>{
+    showScreen('setup');
+  });
+
+  document.getElementById('howtoBtn').addEventListener('click', ()=>{
+    alert('🧬 طريقة اللعب:\n\n1) كل فريق بدوره يختار فئة وقيمة نقاط من اللوحة.\n2) المضيف يقرأ السؤال بصوت عالٍ، والفريق يناقش الإجابة شفهياً.\n3) اضغط «كشف الإجابة» ثم حدد مين جاوب صح ليأخذ النقاط.\n4) الإجابة الصحيحة تُبقي السيطرة لنفس الفريق، والخاطئة تمرر الدور.\n5) بعض الخلايا «سؤال مضاعف ⚡» تتيح للفريق الرهان بنقاط إضافية!\n\nبالتوفيق يا دكاترة 🩺');
+  });
+
+})();
+</script>
+</body>
+</html>
